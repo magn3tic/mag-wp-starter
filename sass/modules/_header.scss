@@ -1,0 +1,18 @@
+
+.site-header {
+	padding: 20px;
+	border-bottom: 1px solid darken($white,5%);
+}
+
+.primary-nav {
+	float: right;
+	ul {
+		list-style:none;padding:0;margin:0;
+		@include clearfix();
+	}
+
+	li {
+		display:inline-block;
+		margin-left: 10px;
+	}
+}

@@ -1,0 +1,73 @@
+// TYPOGRAPHY
+//======================//
+
+html {
+  font-size: #{$font-size + "%"};
+  line-height: $line-height;
+  font-family: $body-font;
+  font-weight: 200;
+  
+  //prevents text zoom on orientation change to landscape
+  -webkit-text-size-adjust: 100%; 
+  -ms-text-size-adjust: 100%; 
+}
+
+
+// Headings
+%hN {
+	font-weight: 300;
+	margin-top: 0;
+	line-height: 1.2;
+	text-rendering: optimizeLegibility;
+	color: $heading-color;
+}
+
+
+@each $name, $size in $headings-scale {
+  .#{$name} {
+    @extend %hN;
+    @include type-scale($size, $font-base, '#{$typescale-unit}', $font-measure);
+  }
+}
+
+
+@each $h, $size in $headings-map {
+  #{$h} {
+    @extend .#{$size};
+  }
+}
+
+// Paragraphs
+p {
+  margin: auto auto $p-indent;
+  @if $p-spacing == false {
+    & + p {
+      text-indent: $p-indent;
+      margin-top: -$p-indent;
+    }
+  }
+}
+
+//small type
+small {
+  font-size: $small-print-size;
+}
+
+//bold
+b, strong {
+  font-weight: bold;
+}
+
+//abbreviations
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+//Blockquotes
+blockquote {
+  font-style: italic;
+}
+cite {
+  font-size: 85%;
+  font-weight: bold;
+}

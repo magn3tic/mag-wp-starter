@@ -1,0 +1,113 @@
+//COLOR PALLETTE
+//-------------------//
+//new browser defaults (delete if not needed)
+$aqua:  #7FDBFF;
+$blue:  #0074D9;
+$navy:  #001F3F;
+$teal:  #39CCCC;
+$green: #2ECC40;
+$olive: #3D9970;
+$lime:  #01FF70;
+
+$yellow:  #FFDC00;
+$orange:  #FF851B;
+$red:     #FF4136;
+$fuchsia: #F012BE;
+$purple:  #B10DC9;
+$maroon:  #85144B;
+
+$white:  #fff;
+$silver: #ddd;
+$gray:   #aaa;
+$black:  #111;
+
+$primary: $blue;
+$secondary: $lime;
+
+
+
+// GRID SETTINGS
+//---------------------//
+//set to any integer to make the grid adaptive
+//int will be used as an max-width offset to determine when container breaks
+//'responsive' === container is 100% width all the time
+//150 === @media (max-width:#{$bp-sm+150}) { max-width: $bp-sm } ...
+$container-style: 'responsive';
+$container-width: 100%;
+$container-max: 1155px;
+
+// set to true to compile full grid css (instead of using the mixin)
+$grid-html-classes: false; 
+
+$grid-cols: 12;
+
+//gutters are used to set the left & right padding
+$grid-gutters: false;
+
+//offsets are the margin between grid items
+$grid-offsets: false;
+
+//grid will work with as many breakpoints as you need
+$grid-breakpoints: ( 
+  sm: "580px", 
+  md: "767px", 
+  lg: "992px",
+  xl: "1199px" 
+);
+
+//use these when wiritng media queries
+// ex: @media (min-width:$bp-sm) {}
+$bp-sm: map-get($grid-breakpoints,'sm');
+$bp-md: map-get($grid-breakpoints,'md');
+$bp-lg: map-get($grid-breakpoints,'lg');
+$bp-xl: map-get($grid-breakpoints,'xl');
+
+
+
+
+//TYPOGRAPHY SETTINGS
+//---------------------//
+$body-font: 'Open Sans', Helvetica, sans-serif;
+$heading-font: $body-font;
+$accent-font: $body-font;
+
+$body-background: $white;
+$body-color: $black;
+$heading-color: $black;
+
+//used in setting sizes, line-heights, margins...
+$line-height: 1.8;
+$font-size: 105;
+$font-base: 16 * ($font-size/100);
+$font-measure: $font-base * $line-height;
+
+//'rem' will output with pixel fallback
+$typescale-unit: rem;
+
+//paragraph spacing & indent
+$p-spacing: false;
+$p-indent: 1em;
+
+$small-print-size: .85em;
+
+$headings-scale: (
+  tera: 88,
+  giga: 70,
+  mega: 54,//h1
+  alpha: 46, 
+  beta: 38,
+  gamma: 32,
+  delta: 26,
+  epsilon: 21,//h6
+  zeta: 18
+);
+$headings-map: (
+  h1: mega,
+  h2: alpha,
+  h3: beta,
+  h4: gamma,
+  h5: delta,
+  h6: zeta
+);
+
+

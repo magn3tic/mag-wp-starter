@@ -1,0 +1,83 @@
+// GRID
+//============================//
+//mixins to use with semantic class names
+//seetings can be adjusted from variable above
+
+//site container/row, direct parent of columns
+@mixin container($width:$container-width,$max-width:$container-max,$margin:0 auto,$style:$container-style) {
+	@include clearfix();
+	margin: $margin;
+
+	@if $style == 'responsive' {
+		max-width: $max-width;
+		width: $width;
+	} @else {
+		@each $key, $val in $grid-breakpoints {
+			@media (max-width:#{$val+$style}) {
+				//todo: adaptive grid option
+				max-width: #{$val};
+			}
+		}
+	}
+
+}
+
+//columns, $count is required
+@mixin column($count, $gutters: $grid-gutters, $offset: false, $float: left) {
+	float: $float;
+	width: #{($count/$grid-cols)*100+'%'};
+  @if $gutters {
+    padding-left: $gutters;
+    padding-right: $gutters;
+  }
+  @if $offset {
+  	margin-left: #{($offset/$grid-cols)*100+'%'};
+  }
+}
+
+
+
+// CSS CLASS-NAME OUTPUT
+//============================//
+// (you can delete this bit if $grid-html-classes will always be false)
+//If set to true, outputs bootstrap-style grid classes
+//the breakpoint key from the settings is used in the classname
+//ex: the settings $bp = ( small: "20em", large: "55em");
+// would output .col-small-1, .col-small-2, etc...
+@if $grid-html-classes {
+ 
+	//default up to first breakpoint
+	@for $i from 1 through $grid-cols - 1 {
+		.col-#{$i} {
+	    float:left;
+	    width: #{($i/$grid-cols)*100+'%'};
+	    @if $grid-gutters {
+	      padding-left: #{$grid-gutters};
+	      padding-right: #{$grid-gutters};
+	    }
+	  }
+	}
+	// looping through breakpoints
+	@each $key, $val in $grid-breakpoints {
+	  @media (min-width:#{$val}) {
+	    [class*="col-#{$key}-"] {
+	      float: left;
+	    }
+	     @for $i from 1 through $grid-cols - 1 {
+	       .col-#{$key}-#{$i} {
+	      	width: #{($i/$grid-cols)*100+'%'};
+	          @if $grid-gutters {
+	            padding-left: #{$grid-gutters};
+	            padding-right: #{$grid-gutters};
+	          }
+	    	}
+	    	@if $offsets {
+	        .col-#{$key}-offset-#{$i} {
+	          margin-left: #{($i/$grid-cols)*100+'%'};
+	        }
+	      }
+	    } //end $cols loop
+	  } //end @media
+	} //end @each
+
+}

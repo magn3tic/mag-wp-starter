@@ -1,0 +1,33 @@
+/* Handmade by MAGNETIC CREATIVE 
+* http://www.magneticcreative.com
+***********************************/
+
+//the parts of compass we need
+@import "compass/support";
+@import "compass/CSS3";
+@import "compass/utilities";
+
+@import "base/compass-animate";  //keyframes mixin & timing functions
+
+@import "base/settings";  //setup variables for color/type/grid
+
+@import "base/mixins";
+@import "base/grid"; //contains grid mixins
+
+@import "base/normalize"; //necolas gallaghers normalize, slightly modded
+
+//import authored sass here
+@import "modules/general";
+@import "modules/header";
+
+@import "modules/home";
+@import "modules/page";
+@import "modules/typography";
+
+@import "modules/footer";
+
+
+
+//@import "plugins/royalslider"; //royalsliders base css
+
+

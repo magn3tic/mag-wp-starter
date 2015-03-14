@@ -1,0 +1,53 @@
+
+//clear floats
+%clearfix {
+  &:after {clear:both;content:"";display:table;}
+  &:before {content:"";display:table;}
+}
+//font-smoothing
+%smooth {
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased; 
+}
+// Hide only visually, but have it available for screenreaders: h5bp.com/v 
+%visually-hidden { 
+	border: 0; 
+	clip: rect(0 0 0 0); 
+	height: 1px; 
+	margin: -1px; 
+	overflow: hidden; 
+	padding: 0; 
+	position: absolute; 
+	width: 1px; 
+}
+
+
+//style user-selections text (not officially supported by css)
+::-moz-selection { background: $primary; color: $white; text-shadow: none; }
+::selection { background: $primary; color: $white; text-shadow: none; }
+
+
+
+//default inline anchor style
+a {
+	color: $primary;
+	background: transparent;
+	text-decoration: none;
+	border-bottom: 1px solid darken($white,10%);
+
+    
+	//be aware that that without a focus outline, 
+	//it's impossible to tab through the site
+  &:focus {
+      outline: thin dotted;
+  }
+  &:hover,
+  &:active {
+      outline: 0;
+  }
+}
+
+//site wrappers/containers
+.inner {
+	@include container();
+}
