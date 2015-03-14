@@ -5,14 +5,40 @@
 }
 
 .primary-nav {
-	float: right;
+	display: none;
 	ul {
 		list-style:none;padding:0;margin:0;
 		@include clearfix();
 	}
 
 	li {
-		display:inline-block;
-		margin-left: 10px;
+		display: block;
+		text-align: right;
 	}
+	a {
+	
+	}
+}
+
+.mobile-toggle {
+	float: right;
+}
+
+
+
+@media (min-width:$bp-md) {
+
+	.mobile-toggle {
+		display: none;
+	}
+	
+	.primary-nav {
+		display:block !important;
+		float: right;
+
+		li {
+			display: inline-block;
+		}
+	}
+
 }

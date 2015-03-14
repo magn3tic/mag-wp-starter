@@ -47,10 +47,8 @@ include_once('lib/admin.php');
 /******************** Shortcodes ***********************/
 
 // these are created for use in the visual editor
-// http://codex.wordpress.org/Shortcode_API
-// important to note that shortcode functions must return a value not echo it
-
-//include_once('lib/shortcodes.php');
+// see file for examples and reference links
+include_once('lib/shortcodes.php');
 
 
 /******************** jQuery enqueue *************************/

@@ -37,11 +37,11 @@ $root = get_template_directory_uri();
 
 <body <?php body_class(); ?> itemscope itemtype="http://schema.org/WebPage">
 
-<header class="site-header" itemscope itemtype="http://schema.org/WPHeader">
+<header id="header" class="site-header" itemscope itemtype="http://schema.org/WPHeader">
 	<div class="inner">
 		<a href="<?php echo get_site_url(); ?>"><?php echo bloginfo('site_title'); ?></a>
-
-		<nav class="primary-nav" role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
+		<button id="main-nav-toggle" class="mobile-toggle">Menu</button>
+		<nav id="main-nav" class="primary-nav" role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
 		<?php wp_nav_menu( array(
 	    'theme_location' => 'header-menu',
 	    'menu_class' => 'primary-nav_menu',

@@ -8,19 +8,18 @@ get_header();
 if (have_posts()) : while (have_posts()) : the_post();
 ?>
 
-<section class="">
+<section class="content-singlepost">
 	<div class="inner">
+		
 		<article>
-			
+			<h1><?php the_title(); ?></h1>
+			<?php the_content(); ?>
 		</article>
+	
 	</div>
 </section>
 
-<section>
-	<div class="inner">
-		
-	</div>
-</section>
+
 
 <?php
 endwhile; endif; wp_reset_postdata();

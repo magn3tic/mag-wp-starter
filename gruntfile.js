@@ -44,7 +44,7 @@ module.exports = function(grunt) {
 				tasks: ['compass']
 			},
 			scripts: {
-				files: ['assets/js/app.js'],
+				files: ['assets/js/global.js'],
 				tasks: ['concat','uglify']
 			}
 		}

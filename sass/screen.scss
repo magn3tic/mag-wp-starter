@@ -15,6 +15,7 @@
 @import "base/grid"; //contains grid mixins
 
 @import "base/normalize"; //necolas gallaghers normalize, slightly modded
+@import "modules/typography";
 
 //import authored sass here
 @import "modules/general";
@@ -22,10 +23,9 @@
 
 @import "modules/home";
 @import "modules/page";
-@import "modules/typography";
+@import "modules/post";
 
 @import "modules/footer";
-
 
 
 //@import "plugins/royalslider"; //royalsliders base css

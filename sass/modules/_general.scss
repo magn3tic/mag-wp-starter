@@ -47,6 +47,11 @@ a {
   }
 }
 
+//button styles
+.button {
+	@include button();
+}
+
 //site wrappers/containers
 .inner {
 	@include container();

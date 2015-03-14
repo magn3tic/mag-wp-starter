@@ -4,8 +4,13 @@
 
 
 
-@mixin button() {
-	//author your button mixin
+@mixin button($display:inline-block,$font-size:1em,$bg:$primary,$color:$white,$padding:12px 25px,$border-radius:2em) {
+	display: $display;
+	background: $bg;
+	color: $color;
+	padding: $padding;
+	font-size: $font-size;
+	border-radius: $border-radius;
 }
 
 
