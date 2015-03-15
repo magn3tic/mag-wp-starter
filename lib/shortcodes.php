@@ -58,12 +58,7 @@ function mag_button_shortcode($atts,$content = null) {
 		'url' => '#0',
 		'style' => 'medium'
 		), $atts));
-
-	ob_start();
-
-	echo '<a href="'.$url.'" class="button button-'.$style.'">'.$content.'</a>';
-
-	return ob_get_clean();
+	return '<a href="'.$url.'" class="button button-'.$style.'">'.$content.'</a>';
 }
 
 
@@ -72,7 +67,7 @@ function mag_button_shortcode($atts,$content = null) {
 // arg1 - the name of the shortcode - usage ex: [shortcode_name]
 // arg2 - the function that does the stuff
 function mag_register_shortcodes() {
-   add_shortcode('shortcode_name', 'do_mag_shortcode');
+   add_shortcode('shortcode-name', 'do_mag_shortcode');
    add_shortcode('recent-posts', 'mag_recent_posts_shortcode');
    add_shortcode('button', 'mag_button_shortcode');
 }

@@ -12,6 +12,23 @@ html {
   -ms-text-size-adjust: 100%; 
 }
 
+//default inline anchor style
+a {
+  color: $primary;
+  background: transparent;
+  text-decoration: none;
+
+    
+  //be aware that that without a focus outline, 
+  //it's impossible to tab through the site
+  &:focus {
+      outline: thin dotted;
+  }
+  &:hover,
+  &:active {
+      outline: 0;
+  }
+}
 
 // Headings
 %hN {

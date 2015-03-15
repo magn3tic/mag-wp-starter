@@ -13,7 +13,11 @@ get_header(); ?>
 <section>
 	<div class="inner">
 	<?php
-	if (have_posts()) : while (have_posts()) : the_post(); ?>
+	$wpq = new WP_query(array(
+		'post_type' => 'post',
+		'posts_per_page' => -1
+		));
+	if ($wpq->have_posts()) : while ($wpq->have_posts()) : $wpq->the_post(); ?>
 
 	<article class="single-article" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
 		<h2 class="single-article_headline" itemprop="headline">

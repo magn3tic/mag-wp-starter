@@ -7,27 +7,42 @@
 @import "compass/CSS3";
 @import "compass/utilities";
 
-@import "base/compass-animate";  //keyframes mixin & timing functions
 
-@import "base/settings";  //setup variables for color/type/grid
+// modeled after bourbon's keyframe, animation, easings
+// see http://bourbon.io/docs/
+@import "base/compass-animate"; 
 
+//setup variables for color/type/grid
+@import "base/settings"; 
+
+//all mixins found in these files
 @import "base/mixins";
-@import "base/grid"; //contains grid mixins
 
-@import "base/normalize"; //necolas gallaghers normalize, slightly modded
+// uncomment this if you are not using grid mixins
+// compiles a bootstrap-style css grid base on your grid settings
+//@import "base/grid"; 
+
+//necolas gallaghers normalize, slightly modded
+@import "base/normalize"; 
+
+//typography 
 @import "modules/typography";
+
+//here's a nice icon set - http://themify.me/themify-icons
+//it's also giant, so delete if don't need it
+//check out http://fontello.com/ for other sets
+@import "base/icons"; 
 
 //import authored sass here
 @import "modules/general";
 @import "modules/header";
-
 @import "modules/home";
 @import "modules/page";
 @import "modules/post";
-
 @import "modules/footer";
+@import "modules/404";
 
-
+//plugin and library css
 //@import "plugins/royalslider"; //royalsliders base css
 
 

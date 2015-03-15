@@ -84,9 +84,6 @@ add_theme_support( 'post-thumbnails' );
 add_image_size( 'custom_thumb', 300, 300, true );
 add_image_size( 'custom_thumb_alt', 900, 550, true );
 
-// rss
-add_theme_support('automatic-feed-links');
-
 
 
 /******************** Menu Settings ***************************/
@@ -111,6 +108,48 @@ function mag_replace_menu_classes($text) {
 } 
 add_filter('wp_nav_menu', 'mag_replace_menu_classes');
 
+
+
+/******************** Post Excerpts *************************/
+
+// edit to whatever link you want at the end of post excerpts
+// wordpress' default is [...]
+add_filter( 'excerpt_more', 'mag_excerpt_more_link' );
+function mag_excerpt_more_link($more) {
+ return ' <a href="'.get_the_permalink().'">...Read More</a>';
+}
+
+
+//If you need to change how wordpress handles the excerpt entirely
+/*
+remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+add_filter('get_the_excerpt', 'custom_trim_excerpt');
+
+function custom_trim_excerpt($text) { 
+	global $post;
+	$excerpt_length = 30;
+		if ( '' == $text ) {
+			$text = get_the_content('');
+			$text = apply_filters('the_content', $text);
+			$text = str_replace(']]>', ']]>', $text);
+			$text = strip_tags($text);
+			$words = explode(' ', $text, $excerpt_length + 1);
+			if (count($words) > $excerpt_length) {
+			array_pop($words);
+			array_push($words, '...');
+			$text = implode(' ', $words);
+		}
+	}
+	return $text;
+}*/
+
+// use to get plain text excerpts manually
+function truncator($phrase, $max_words) {
+   $phrase_array = explode(' ',$phrase);
+   if(count($phrase_array) > $max_words && $max_words > 0)
+      $phrase = implode(' ',array_slice($phrase_array, 0, $max_words)).'...';
+   return $phrase;
+}
 
 
 /********************* Pagination ****************************/

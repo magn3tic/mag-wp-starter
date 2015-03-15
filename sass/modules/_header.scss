@@ -4,6 +4,10 @@
 	border-bottom: 1px solid darken($white,5%);
 }
 
+#site-title {
+	color: $black;
+}
+
 .primary-nav {
 	display: none;
 	ul {
@@ -28,6 +32,13 @@
 
 @media (min-width:$bp-md) {
 
+	.site-header_left {
+		@include column(3);
+	}
+	.site-header_right {
+		@include column(9);
+	}
+
 	.mobile-toggle {
 		display: none;
 	}
@@ -38,6 +49,7 @@
 
 		li {
 			display: inline-block;
+			margin-left: 20px;
 		}
 	}
 

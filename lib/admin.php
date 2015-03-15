@@ -69,8 +69,7 @@ register_taxonomy( 'custom_taxonomies',
 add_filter('manage_edit-new-custom-type_columns', 'custom_type_table_head');
 function custom_type_table_head( $columns ) {
   $columns['field_key']  = 'Example';
-  $columns['event_date']  = 'Concert Date';
-  $columns['event_status']  = 'Status';
+ 
   return $columns;
 }
 
@@ -84,38 +83,40 @@ function custom_type_table_content( $column_name ) {
 }
 
 
-/*********************** Wordpress Login Styles & Mods *************************/
 
-function mag_login_styles() { ?>
-<style type="text/css">
-   body.login { 
-      background-color: #242424;
-   }
+/********************** Login and Admin Frontend *********************/
 
-   div#login { }
+add_action('admin_head','mag_admin_css');
+add_action('login_enqueue_scripts', 'mag_admin_css');
+function mag_admin_css() { 
+   echo '<link rel="stylesheet" href="'.get_template_directory_uri().'/assets/css/admin.css"/>';
+}
 
-   #login input#wp-submit { }
 
-   .login #login #nav a, .login #login #backtoblog a {}
+//add_action('admin_footer','mag_admin_js');
+function mag_admin_js() { ?>
+<?php } 
 
-   .login h1 a { }
-</style>   
-<?php }
-add_action( 'login_enqueue_scripts', 'mag_login_styles' );
 
-// don't link to wordpress.org from login
-function mag_login_url() { return get_bloginfo('url'); }
-add_filter('login_headerurl', 'mag_login_url');
-
-// changes alt text on logo
-function mag_login_title() { return get_option('blogname'); }
-add_filter('login_headertitle', 'mag_login_title');
-
-// admin footer message
+// admin footer message, shown in bottom left on all screens
 function mag_admin_footer() {
    echo '<span id="footer-thankyou">Wordpress Theme by <a href="http://www.magneticcreative.com">Magnetic Creative</a>.</span>';
 }
 add_filter('admin_footer_text', 'mag_admin_footer');
+
+
+// don't link to wordpress.org from login
+add_filter('login_headerurl', 'mag_login_url');
+function mag_login_url() { 
+   return get_bloginfo('url'); 
+}
+
+// changes alt text on logo
+add_filter('login_headertitle', 'mag_login_title');
+function mag_login_title() { 
+   return get_option('blogname'); 
+}
+
 
 
 
@@ -137,8 +138,8 @@ function mag_filter_ptags_on_images($content){
 add_filter('the_content', 'mag_filter_ptags_on_images');
 
 // Removes p tags added around content and excerpt
-//remove_filter('the_content', 'wpautop');
-//remove_filter('the_excerpt', 'wpautop');
+//remove_filter('the_content', 'wpautop'); //probably don't want to uncomment
+remove_filter('the_excerpt', 'wpautop');
 
 // Disable default dash widgets
 function disable_default_dashboard_widgets() {
@@ -162,10 +163,10 @@ add_action( 'wp_dashboard_setup', 'disable_default_dashboard_widgets' );
 
 // add custom widget - blog feed in dash
 // once our blog is running we'll have this active by default
-/*function og_rss_dashboard_widget() {
+/*function mag_rss_dashboard_widget() {
 	if(function_exists('fetch_feed')) {
 		include_once(ABSPATH . WPINC . '/feed.php');             
-		$feed = fetch_feed('http://www.organikseo.com/feed/');
+		$feed = fetch_feed('http://www.magneticcreative.com/feed/');
 		$limit = $feed->get_item_quantity(5);        
 		$items = $feed->get_items(0, $limit);
 	}
@@ -184,7 +185,7 @@ add_action( 'wp_dashboard_setup', 'disable_default_dashboard_widgets' );
 }*/
 
 //adding all custom dash widgets
-/*function og_custom_dashboard_widgets() {
-	wp_add_dashboard_widget('og_rss_dashboard_widget', 'The Latest From Magnetic Creative', 'og_rss_dashboard_widget');
+/*function mag_custom_dashboard_widgets() {
+	wp_add_dashboard_widget('og_rss_dashboard_widget', 'The Latest From Magnetic Creative', 'mag_rss_dashboard_widget');
 }*/
-/*add_action('wp_dashboard_setup', 'og_custom_dashboard_widgets');*/
+/*add_action('wp_dashboard_setup', 'mag_custom_dashboard_widgets');*/

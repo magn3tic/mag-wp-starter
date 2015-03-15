@@ -2,15 +2,18 @@
 // MIXINS
 //============================//
 
-
-
-@mixin button($display:inline-block,$font-size:1em,$bg:$primary,$color:$white,$padding:12px 25px,$border-radius:2em) {
+@mixin button($display:inline-block,$font-size:1em,$bg:$primary,$color:$white,$padding:12px 25px) {
 	display: $display;
 	background: $bg;
 	color: $color;
 	padding: $padding;
 	font-size: $font-size;
-	border-radius: $border-radius;
+	text-transform: uppercase;
+	font-weight: bold;
+	@include transition(all .25s ease);
+	&:hover {
+		background: tint($bg,10%);
+	}
 }
 
 
@@ -35,6 +38,45 @@
     background-size: $width $height;
   }
 }
+
+
+// GRID
+//============================//
+//mixins to use with your own class names
+//settings can be adjusted from _settings.scss
+
+//site container/row, direct parent of columns
+@mixin container($width:$container-width,$max-width:$container-max,$margin:0 auto,$style:$container-style) {
+	@include clearfix();
+	margin: $margin;
+
+	@if $style == 'responsive' {
+		max-width: $max-width;
+		width: $width;
+	} @else {
+		@each $key, $val in $grid-breakpoints {
+			@media (max-width:#{$val+$style}) {
+				//todo: adaptive grid option
+				max-width: #{$val};
+			}
+		}
+	}
+
+}
+
+//columns, $count is required
+@mixin column($count, $gutters: $grid-gutters, $offset: false, $float: left) {
+	float: $float;
+	width: #{($count/$grid-cols)*100+'%'};
+  @if $gutters {
+    padding-left: $gutters;
+    padding-right: $gutters;
+  }
+  @if $offset {
+  	margin-left: #{($offset/$grid-cols)*100+'%'};
+  }
+}
+
 
 
 

@@ -1,0 +1,35 @@
+
+//Login page & admin screen css
+//-------------------------------------//
+
+//login screen - keep form and logo in same overlay height/width,
+//because wp shows it in iframe in some cases
+body.login { 
+  background-color: #eaeaea;
+	
+	//replace login logo
+  .login h1 a { 
+
+  }
+	
+	div#login { 
+
+	}
+
+  #login input#wp-submit { 
+
+  }
+
+  .login #login #nav a, .login #login #backtoblog a {
+
+  }
+
+}
+
+
+
+
+// hides front page settings from client 
+.options-reading-php .form-table tbody tr:first-child {
+    display: none;
+}

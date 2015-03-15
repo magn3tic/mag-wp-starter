@@ -1,4 +1,20 @@
+//Homepage
+//-------------------------------//
+
+
 
 .home-hero {
+	text-align: center;
 	padding: 40px 20px;
+
+	.button {
+		margin-top: 20px;
+		i {
+			margin-right: 5px;
+		}
+	}
+}
+
+.home-body {
+	padding: 20px 20px 80px;
 }
