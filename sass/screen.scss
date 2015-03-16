@@ -36,11 +36,14 @@
 //import authored sass here
 @import "modules/general";
 @import "modules/header";
-@import "modules/home";
-@import "modules/page";
-@import "modules/post";
+
+@import "pages/home";
+@import "pages/page";
+@import "pages/post";
+
 @import "modules/footer";
-@import "modules/404";
+
+@import "pages/404";
 
 //plugin and library css
 //@import "plugins/royalslider"; //royalsliders base css

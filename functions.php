@@ -73,10 +73,13 @@ function mag_script_enqueue() {
 //add_theme_support('post-formats', array('link', 'quote', 'gallery'));
 
 // html5 markup for comments and search
-add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form' ));
+add_theme_support( 'html5', array( 'caption', 'comment-list', 'comment-form', 'search-form' ));
 
 // enable featured images
 add_theme_support( 'post-thumbnails' ); 
+
+// let plugins manage page title
+add_theme_support( 'title-tag' );
 
 // Add image sizes like so, they'll get cropped on upload
 // after adding new image sizes, you may to regenerate thumbnails
@@ -84,6 +87,17 @@ add_theme_support( 'post-thumbnails' );
 add_image_size( 'custom_thumb', 300, 300, true );
 add_image_size( 'custom_thumb_alt', 900, 550, true );
 
+
+
+/********************* WP Search ***************************/
+// add filter to wp's get_search_form() function to change locations to partials folder
+
+add_filter('get_search_form', 'mag_get_search_form');
+function mag_get_search_form() {
+	$form = '';
+	locate_template('/partials/searchform.php', true, false);
+	return $form;
+}
 
 
 /******************** Menu Settings ***************************/
@@ -150,6 +164,22 @@ function truncator($phrase, $max_words) {
       $phrase = implode(' ',array_slice($phrase_array, 0, $max_words)).'...';
    return $phrase;
 }
+
+
+/******************** Widgets Setup **************************/
+// if you need to set up some widgets, you can do it here
+
+function mag_widgets_register() {
+	register_sidebar( array(
+		'name' => 'example_widget',
+		'id' => '',
+		'before_widget' => '',
+		'after_widget' => '',
+		'before_title' => '',
+		'after_title' => ''
+	));
+}
+//add_action('widgets_init', 'mag_widgets_register');
 
 
 /********************* Pagination ****************************/

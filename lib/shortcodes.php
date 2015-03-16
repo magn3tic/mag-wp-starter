@@ -24,7 +24,8 @@ function do_mag_shortcode() {
 }
 
 /************* Example w/ Parameters ******************/
-//allows listing of recent posts 
+// allows listing of recent posts, clients can pass in parameters 
+// using attributes in the shortcode just like html 
 function mag_recent_posts_shortcode($atts) {
 	global $post;
 	$post_to_exclude = $post->ID;
@@ -52,7 +53,8 @@ function mag_recent_posts_shortcode($atts) {
 
 
 /************* Example w/ Params/Content ******************/
-//adds styles buttons
+// shortcodes can also have content (needs to be opened/closed) 
+// ex: [shortcode] Content Here [/shortcode]
 function mag_button_shortcode($atts,$content = null) {
 	extract( shortcode_atts(array(
 		'url' => '#0',

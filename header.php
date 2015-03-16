@@ -7,7 +7,7 @@ $root = get_template_directory_uri();
 <!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
 <head>
-<meta charset="<?php bloginfo( 'charset' ); ?>" />
+<meta charset="utf-8">
 
 <title><?php wp_title(''); ?></title>				
 
