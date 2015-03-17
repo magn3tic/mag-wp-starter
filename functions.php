@@ -1,5 +1,14 @@
 <?php
 
+/*************** Config Settings *******************/
+
+/*$magconfig = array(
+	'disable_trackbacks' => true
+	);
+
+$GLOBALS['magconfig'] = $magconfig;*/
+
+
 /************* Advanced Custom Fields ****************/
 
 //http://www.advancedcustomfields.com/resources/ - V5-PRO
@@ -86,6 +95,12 @@ add_theme_support( 'title-tag' );
 // use a plugin - https://wordpress.org/plugins/regenerate-thumbnails/
 add_image_size( 'custom_thumb', 300, 300, true );
 add_image_size( 'custom_thumb_alt', 900, 550, true );
+
+// This is a global variable used inside wordpress to set a maximum image or object size
+// Set it to about the site's container size
+if (!isset($content_width)) {
+  $content_width = 1220;
+}
 
 
 

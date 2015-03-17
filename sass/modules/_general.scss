@@ -21,8 +21,10 @@
 	width: 1px; 
 }
 
+//set's everything to border-box (supported IE9+)
+*,*:before,*:after {@include box-sizing(border-box);}
 
-//style user-selections text (not officially supported by css)
+//style user-selections text (not officially css supported)
 ::-moz-selection { background: $primary; color: $white; text-shadow: none; }
 ::selection { background: $primary; color: $white; text-shadow: none; }
 

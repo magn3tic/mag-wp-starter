@@ -27,7 +27,15 @@ module.exports = function(grunt) {
 		compass: {
 			dist: {
 				options: {
-					config: 'config.rb'
+					httpPath: '/',
+					require: 'compass/import-once/activate',
+					sassDir: 'sass',
+					cssDir: 'assets/css',
+					javascriptsDir: 'assets/js',
+					fontsDir: 'assets/fonts',
+					imagesDir: 'assets/img',
+					outputStyle: 'nested',
+					noLineComments: true
 				}
 			}
 		},

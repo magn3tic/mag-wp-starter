@@ -92,8 +92,8 @@ function mag_admin_css() {
    echo '<link rel="stylesheet" href="'.get_template_directory_uri().'/assets/css/admin.css"/>';
 }
 
-
-//add_action('admin_footer','mag_admin_js');
+//if necessary you can add js the same way
+// add_action('admin_footer','mag_admin_js'); 
 function mag_admin_js() { ?>
 <?php } 
 
@@ -123,19 +123,31 @@ function mag_login_title() {
 /************************ Wordpress Cleanup ****************************/
 
 // remove unneccessary stuff from doc head
-remove_action( 'wp_head', 'rsd_link' );                    
-remove_action( 'wp_head', 'wlwmanifest_link' );                       
-remove_action( 'wp_head', 'index_rel_link' );                         
-remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );            
-remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );             
-remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 ); 
+
+remove_action( 'wp_head', 'feed_links', 2);
+remove_action( 'wp_head', 'feed_links_extra', 3);
+remove_action( 'wp_head', 'rsd_link' );       
+remove_action( 'wp_head', 'wlwmanifest_link' );                                
+remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );
+remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );
+remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 );
+remove_action('wp_head', 'wp_shortlink_wp_head', 10, 0); 
 remove_action( 'wp_head', 'wp_generator' );
 
+
 // removes p tags around images added through visual editor
+add_filter('the_content', 'mag_filter_ptags_on_images');
 function mag_filter_ptags_on_images($content){
    return preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
 }
-add_filter('the_content', 'mag_filter_ptags_on_images');
+
+// replaces self closing tags
+add_filter('get_avatar', 'mag_remove_self_closers');
+add_filter('comment_id_fields', 'mag_remove_self_closers');
+add_filter('post_thumbnail_html', 'mag_remove_self_closers');
+function mag_remove_self_closers($input) {
+  return str_replace(' />', '>', $input);
+}
 
 // Removes p tags added around content and excerpt
 //remove_filter('the_content', 'wpautop'); //probably don't want to uncomment
@@ -156,6 +168,43 @@ function disable_default_dashboard_widgets() {
    unset($wp_meta_boxes['dashboard']['normal']['core']['yoast_db_widget']);          
 }
 add_action( 'wp_dashboard_setup', 'disable_default_dashboard_widgets' );
+
+
+/************************ Trackback Disable **************************/
+// disable the pingback method, remove the headers and rewrite rules
+
+function mag_filter_xmlrpc_method($methods) {
+  unset($methods['pingback.ping']);
+  return $methods;
+}
+add_filter('xmlrpc_methods', 'mag_filter_xmlrpc_method', 10, 1);
+
+function mag_filter_pingback_headers($headers) {
+  if (isset($headers['X-Pingback'])) { unset($headers['X-Pingback']); }
+  return $headers;
+}
+add_filter('wp_headers', 'mag_filter_pingback_headers', 10, 1);
+
+function mag_filter_pingback_rewrites($rules) {
+  foreach ($rules as $rule => $rewrite) {
+    if (preg_match('/trackback\/\?\$$/i', $rule)) { unset($rules[$rule]); }
+  }
+  return $rules;
+}
+add_filter('rewrite_rules_array', 'mag_filter_pingback_rewrites');
+
+function mag_kill_pingback_url($output, $show) {
+  if ($show === 'pingback_url') { $output = ''; }
+  return $output;
+}
+add_filter('bloginfo_url', 'mag_kill_pingback_url', 10, 2);
+
+function mag_kill_xmlrpc($action) {
+  if ($action === 'pingback.ping') {
+    wp_die('Pingbacks are not supported', 'Not Allowed!', array('response' => 403));
+  }
+}
+add_action('xmlrpc_call', 'mag_kill_xmlrpc');
 
 
 

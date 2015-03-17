@@ -19,7 +19,7 @@
 @import "base/mixins";
 
 // uncomment this if you are not using grid mixins
-// compiles a bootstrap-style css grid base on your grid settings
+// compiles a bootstrap-style css grid based on your grid settings
 //@import "base/grid"; 
 
 //necolas gallaghers normalize, slightly modded
@@ -41,9 +41,13 @@
 @import "pages/page";
 @import "pages/post";
 
+@import "pages/archive";
+
 @import "modules/footer";
 
 @import "pages/404";
+
+@import "modules/forms";
 
 //plugin and library css
 //@import "plugins/royalslider"; //royalsliders base css
