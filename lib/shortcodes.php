@@ -14,7 +14,7 @@
 function do_mag_shortcode() {
 	global $post;
 
-		//- retrieve values using attached to current post
+	//- retrieve values using attached to current post
 
 	//build html after starting output buffer
 	ob_start(); ?>

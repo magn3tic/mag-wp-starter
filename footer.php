@@ -22,7 +22,7 @@ $root = get_template_directory_uri();
 </footer>
 
 
-<script src="<?php echo "$root/assets/js/min/plugins.min.js"; ?>"></script>
-<script src="<?php echo "$root/assets/js/min/global.min.js"; ?>"></script>
+<script src="<?php echo "$root/assets/js/plugins.js"; ?>"></script>
+<script src="<?php echo "$root/assets/js/global.js"; ?>"></script>
 <?php wp_footer(); ?>
 </body>

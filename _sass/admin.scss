@@ -1,0 +1,46 @@
+
+//Login page & admin screen css
+//-------------------------------------//
+//compiles to assets/css/admin.css
+//login screen - keep form and logo in same height/width,
+//because wp shows it in iframe in some cases
+
+//make sure to use body.class in selectors where required
+//each page on admin has a unique body class
+
+* {
+  
+}
+
+body.login { 
+  background-color: #eaeaea;
+	
+	//replace admin logon logo
+  .login h1 a { 
+
+  }
+	
+	div#login { 
+
+	}
+
+  #login input#wp-submit { 
+
+  }
+
+  .login #login #nav a, .login #login #backtoblog a {
+
+  }
+
+}
+
+
+
+
+// Hide front-page settings
+//---------------------------------------//
+// this keeps changes from being made in the admin that would 
+// that would 'break' a clients site 
+.options-reading-php .form-table tbody tr:first-child {
+    display: none;
+}

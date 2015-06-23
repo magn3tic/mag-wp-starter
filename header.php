@@ -1,6 +1,7 @@
 <?php
 
 
+//site root
 $root = get_template_directory_uri();
 ?>
 

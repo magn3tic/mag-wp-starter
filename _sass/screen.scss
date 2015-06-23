@@ -1,0 +1,38 @@
+/* Handmade by MAGNETIC CREATIVE 
+* http://www.magneticcreative.com
+***********************************/
+@import "bourbon/bourbon";
+@import "neat/neat";
+
+//setup variables for color/type/grid
+@import "settings"; 
+
+//custom theme mixins
+@import "mixins";
+
+//necolas gallaghers normalize, slightly modded
+@import "normalize"; 
+
+//typography 
+@import "modules/typography";
+
+//import authored sass here
+@import "modules/general";
+@import "modules/header";
+
+@import "pages/home";
+@import "pages/page";
+@import "pages/post";
+
+@import "pages/archive";
+
+@import "modules/footer";
+
+@import "pages/404";
+
+@import "modules/forms";
+
+//plugin and library css
+//@import "plugins/flickity"; //flickity base css
+
+
