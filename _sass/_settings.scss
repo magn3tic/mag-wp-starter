@@ -55,6 +55,7 @@ $grid-breakpoints: (
   xl: "1199px" 
 );
 
+
 //use these when wiritng media queries
 // ex: @media (min-width:$bp-sm) {}
 $bp-sm: map-get($grid-breakpoints,'sm');
