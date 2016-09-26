@@ -17,11 +17,8 @@ class acf_compatibility {
 	
 	function __construct() {
 		
-		// all field
+		// fields
 		add_filter('acf/get_valid_field',					array($this, 'get_valid_field'), 20, 1);
-		
-		
-		// specific fields
 		add_filter('acf/get_valid_field/type=textarea',		array($this, 'get_valid_textarea_field'), 20, 1);
 		add_filter('acf/get_valid_field/type=relationship',	array($this, 'get_valid_relationship_field'), 20, 1);
 		add_filter('acf/get_valid_field/type=post_object',	array($this, 'get_valid_relationship_field'), 20, 1);
@@ -30,19 +27,25 @@ class acf_compatibility {
 		add_filter('acf/get_valid_field/type=file',			array($this, 'get_valid_image_field'), 20, 1);
 		add_filter('acf/get_valid_field/type=wysiwyg',		array($this, 'get_valid_wysiwyg_field'), 20, 1);
 		add_filter('acf/get_valid_field/type=date_picker',	array($this, 'get_valid_date_picker_field'), 20, 1);
+		add_filter('acf/get_valid_field/type=taxonomy',		array($this, 'get_valid_taxonomy_field'), 20, 1);
+		add_filter('acf/get_valid_field/type=date_time_picker',	array($this, 'get_valid_date_time_picker_field'), 20, 1);
 		
 		
-		// all field groups
+		// field groups
 		add_filter('acf/get_valid_field_group',				array($this, 'get_valid_field_group'), 20, 1);
 		
 		
 		// settings
-		add_action('after_setup_theme',						array($this, 'after_setup_theme'), 20);
+		add_filter('acf/settings/show_admin',				array($this, 'settings_acf_lite'), 5, 1);
+		add_filter('acf/settings/l10n_textdomain',			array($this, 'settings_export_textdomain'), 5, 1);
+		add_filter('acf/settings/l10n_field',				array($this, 'settings_export_translate'), 5, 1);
+		add_filter('acf/settings/l10n_field_group',			array($this, 'settings_export_translate'), 5, 1);
+		
 	}
 	
 	
 	/*
-	*  after_setup_theme
+	*  settings
 	*
 	*  description
 	*
@@ -54,14 +57,33 @@ class acf_compatibility {
 	*  @return	$post_id (int)
 	*/
 	
-	function after_setup_theme() {
+	function settings_acf_lite( $setting ) {
 		
+		// 5.0.0 - removed ACF_LITE
 		if( defined('ACF_LITE') && ACF_LITE ) {
 			
-			acf_update_setting('show_admin', false);
+			$setting = false;
 			
 		}
-			
+		
+		
+		// return
+		return $setting;
+		
+	}
+	
+	function settings_export_textdomain( $setting ) {
+		
+		// 5.3.3 - changed filter name
+		return acf_get_setting( 'export_textdomain', $setting );
+		
+	}
+	
+	function settings_export_translate( $setting ) {
+		
+		// 5.3.3 - changed filter name
+		return acf_get_setting( 'export_translate', $setting );
+		
 	}
 	
 	
@@ -153,6 +175,11 @@ class acf_compatibility {
 	*/
 	
 	function get_valid_relationship_field( $field ) {
+		
+		// force array
+		$field['post_type'] = acf_get_array($field['post_type']);
+		$field['taxonomy'] = acf_get_array($field['taxonomy']);
+		
 		
 		// remove 'all' from post_type
 		if( acf_in_array('all', $field['post_type']) ) {
@@ -319,6 +346,87 @@ class acf_compatibility {
 		
 		// return
 		return $field;
+		
+	}
+	
+	
+	/*
+	*  get_valid_taxonomy_field
+	*
+	*  This function will provide compatibility with ACF4 fields
+	*
+	*  @type	function
+	*  @date	23/04/2014
+	*  @since	5.0.0
+	*
+	*  @param	$field (array)
+	*  @return	$field
+	*/
+	
+	function get_valid_taxonomy_field( $field ) {
+		
+		// 5.2.7
+		if( isset($field['load_save_terms']) ) {
+			
+			$field['save_terms'] = $field['load_save_terms'];
+			
+		}
+		
+		
+		// return
+		return $field;
+		
+	}
+	
+	
+	/*
+	*  get_valid_date_time_picker_field
+	*
+	*  This function will provide compatibility with existing 3rd party fields
+	*
+	*  @type	function
+	*  @date	23/04/2014
+	*  @since	5.0.0
+	*
+	*  @param	$field (array)
+	*  @return	$field
+	*/
+	
+	function get_valid_date_time_picker_field( $field ) {
+		
+		// 3rd party date time picker
+		// https://github.com/soderlind/acf-field-date-time-picker
+		if( !empty($field['time_format']) ) {
+			
+			// extract vars
+			$time_format = acf_extract_var( $field, 'time_format' );
+			$date_format = acf_extract_var( $field, 'date_format' );
+			$get_as_timestamp = acf_extract_var( $field, 'get_as_timestamp' );
+			
+			
+			// convert from js to php
+			$time_format = acf_convert_time_to_php( $time_format );
+			$date_format = acf_convert_date_to_php( $date_format );
+			
+			
+			// append settings
+			$field['return_format'] = $date_format . ' ' . $time_format;
+			$field['display_format'] = $date_format . ' ' . $time_format;
+			
+			
+			// timestamp
+			if( $get_as_timestamp === 'true' ) {
+				
+				$field['return_format'] = 'U';
+				
+			}
+			
+		}
+		
+
+		// return
+		return $field;
+		
 	}
 	
 	
@@ -341,8 +449,16 @@ class acf_compatibility {
 		global $wpdb;
 		
 		
-		// add missing 'key' if $field group is from a version prioir to 5.0.0
+		// vars
+		$v = 5;
+		
+		
+		// add missing 'key' (v5.0.0)
 		if( empty($field_group['key']) ) {
+			
+			// update version
+			$v = 4;
+			
 			
 			// add missing key
 			$field_group['key'] = empty($field_group['id']) ? uniqid('group_') : 'group_' . $field_group['id'];
@@ -350,61 +466,60 @@ class acf_compatibility {
 		}
 		
 		
-		// extract options
+		// extract options (v5.0.0)
 		if( !empty($field_group['options']) ) {
 			
 			$options = acf_extract_var($field_group, 'options');
-			
 			$field_group = array_merge($field_group, $options);
 			
 		}
 		
 		
-		// some location rules have changed
-		if( !empty($field_group['location']) ) {
+		// location rules changed to groups (v5.0.0)
+		if( !empty($field_group['location']['rules']) ) {
 			
-			// location rules changed to groups
-			if( isset($field_group['location']['rules']) ) {
-				
-				// extract location
-				$location = acf_extract_var( $field_group, 'location' );
-				
-				
-				// reset location
-				$field_group['location'] = array();
-				
-				
-				// vars
-				$group = 0;
-		 		$all_or_any = $location['allorany'];
+			// extract location
+			$location = acf_extract_var( $field_group, 'location' );
+			
+			
+			// reset location
+			$field_group['location'] = array();
+			
+			
+			// vars
+			$group = 0;
+	 		$all_or_any = $location['allorany'];
+	 		
+	 		
+	 		// loop over rules
+	 		if( !empty($location['rules']) ) {
 		 		
-		 		
-		 		// loop over rules
-		 		if( !empty($location['rules']) ) {
+		 		foreach( $location['rules'] as $rule ) {
 			 		
-			 		foreach( $location['rules'] as $rule ) {
-				 		
-					 	// sperate groups?
-					 	if( $all_or_any == 'any' ) {
+				 	// sperate groups?
+				 	if( $all_or_any == 'any' ) {
+				 	
+					 	$group++;
 					 	
-						 	$group++;
-						 	
-					 	}
-					 	
-					 	
-					 	// add to group
-					 	$field_group['location'][ $group ][] = $rule;
-			 	
 				 	}
 				 	
-		 		}
+				 	
+				 	// add to group
+				 	$field_group['location'][ $group ][] = $rule;
+		 	
+			 	}
 			 	
-			 	
-			 	// reset keys
-				$field_group['location'] = array_values($field_group['location']);
-			 	
-			}
-			
+	 		}
+		 	
+		 	
+		 	// reset keys
+			$field_group['location'] = array_values($field_group['location']);
+		 	
+		}
+		
+		
+		// some location rules have changed (v5.0.0)
+		if( !empty($field_group['location']) ) {
 			
 			// param changes
 		 	$param_replace = array(
@@ -414,6 +529,14 @@ class acf_compatibility {
 		 		'ef_user'		=> 'user_role',
 		 		'user_type'		=> 'current_user_role' // 5.2.0
 		 	);
+		 	
+		 	
+		 	// remove conflicting param
+		 	if( $v == 5 ) {
+			 	
+			 	unset($param_replace['taxonomy']);
+			 	
+		 	}
 		 	
 		 	
 			// loop over location groups
@@ -459,10 +582,8 @@ class acf_compatibility {
 						 	$rule['value'] = "{$term->taxonomy}:{$term->slug}";
 						 	
 					 	}
-					 	// if
 					 	
 				 	}
-				 	// if
 				 	
 				 	
 				 	// append rule
@@ -482,7 +603,7 @@ class acf_compatibility {
 		// if
 		
 		
-		// change layout to style
+		// change layout to style (v5.0.0)
 		if( !empty($field_group['layout']) ) {
 		
 			$field_group['style'] = acf_extract_var($field_group, 'layout');
@@ -490,8 +611,8 @@ class acf_compatibility {
 		}
 		
 		
-		// change no_box to seamless
-		if( $field_group['style'] == 'no_box' ) {
+		// change no_box to seamless (v5.0.0)
+		if( $field_group['style'] === 'no_box' ) {
 		
 			$field_group['style'] = 'seamless';
 			

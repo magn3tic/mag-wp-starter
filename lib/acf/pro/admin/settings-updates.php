@@ -21,7 +21,8 @@ class acf_settings_updates {
 	function __construct() {
 	
 		// actions
-		add_action( 'admin_menu', 				array( $this, 'admin_menu' ), 20 );
+		add_action('admin_menu', array($this, 'admin_menu'), 20 );
+		
 	}
 	
 	
@@ -41,11 +42,16 @@ class acf_settings_updates {
 	function admin_menu() {
 		
 		// bail early if no show_admin
-		if( !acf_get_setting('show_admin') )
-		{
-			return;
-		}
+		if( !acf_get_setting('show_admin') ) return;
 		
+		
+		// bail early if no show_updates
+		if( !acf_get_setting('show_updates') ) return;
+		
+		
+		// bail early if not a plugin (included in theme)
+		if( !acf_is_plugin_active() ) return;
+				
 		
 		// add page
 		$page = add_submenu_page('edit.php?post_type=acf-field-group', __('Updates','acf'), __('Updates','acf'), acf_get_setting('capability'),'acf-settings-updates', array($this,'html') );
@@ -53,6 +59,48 @@ class acf_settings_updates {
 		
 		// actions
 		add_action('load-' . $page, array($this,'load'));
+		
+	}
+	
+	
+	/*
+	*  show_remote_response_error
+	*
+	*  This function will show an admin notice if server connection fails
+	*
+	*  @type	function
+	*  @date	25/07/2016
+	*  @since	5.4.0
+	*
+	*  @param	n/a
+	*  @return	n/a
+	*/
+	
+	function show_remote_response_error() {
+		
+		// only run once
+		if( acf_has_done('show_remote_response_error') ) return false;
+		
+		
+		// vars
+    	$error = acf_get_setting('remote_response_error');
+    	$notice = __('<b>Error</b>. Could not connect to update server', 'acf');
+    	
+    	
+    	// append error
+    	if( $error ) {
+        	
+        	$notice .= ' <span class="description">(' . $error . ')</span>';
+        	
+    	}
+    	
+    	
+    	// add notice
+    	acf_add_admin_notice( $notice, 'error' );
+		
+		
+		// return
+		return false;
 		
 	}
 	
@@ -106,14 +154,13 @@ class acf_settings_updates {
 		
 		
 		// vars
-		$info = acf_pro_get_remote_info();
+		$info = acf_get_remote_plugin_info();
 		
 		
 		// validate
         if( empty($info) ) {
-        
-        	acf_add_admin_notice( __('<b>Error</b>. Could not connect to update server', 'acf'), 'error');
-        	return;
+        	
+        	return $this->show_remote_response_error();
         	
         }
         
@@ -123,66 +170,18 @@ class acf_settings_updates {
         
         
         // add changelog if the remote version is '>' than the current version
-		if( acf_pro_is_update_available() )
-        {
+		if( acf_pro_is_update_available() ) {
+			
         	$this->view['update_available'] = true;
-        	 
-        	 
-        	// changelog
-        	$changelogs = explode('<h4>', $info['changelog']);
+        	$this->view['changelog'] = acf_maybe_get($info, 'changelog');
+        	$this->view['upgrade_notice'] = acf_maybe_get($info, 'upgrade_notice');
         	
-        	foreach( $changelogs as $changelog )
-        	{
-        		// validate (first segment is always empty due to explode)
-	        	if( empty($changelog) )
-	        	{
-		        	continue;
-	        	}
-	        	
-	        	
-        	 	// explode
-	        	$changelog = explode('</h4>', $changelog);
-	        	$changelog_version = trim($changelog[0]);
-	        	$changelog_text = trim($changelog[1]);
-	        	$changelog_text = str_replace('<ul>', '<ul class="ul-disc">', $changelog_text);
-	        	
-	        	if( version_compare($this->view['remote_version'], $changelog_version, '==') )
-	        	{
-		        	$this->view['changelog'] = $changelog_text;
-		        	break;
-	        	}
-	        	
-        	}
-        	 
-        	 
-        	// upgrade_notice
-        	$upgrade_notices = explode('<h4>', $info['upgrade_notice']);
-        	
-        	foreach( $upgrade_notices as $upgrade_notice )
-        	{
-        		// validate (first segment is always empty due to explode)
-	        	if( empty($upgrade_notice) )
-	        	{
-		        	continue;
-	        	}
-	        	
-	        	
-        	 	// explode
-	        	$upgrade_notice = explode('</h4>', $upgrade_notice);
-	        	$upgrade_version = trim($upgrade_notice[0]);
-	        	$upgrade_text = trim($upgrade_notice[1]);
-	        	$upgrade_text = str_replace('<ul>', '<ul class="ul-disc">', $upgrade_text);
-	        	
-	        	if( version_compare($this->view['current_version'], $upgrade_version, '<') )
-	        	{
-		        	$this->view['upgrade_notice'] = $upgrade_text;
-		        	break;
-	        	}
-	        	
-        	 }
         }
 		
 		
+		// update transient
+		acf_refresh_plugin_updates_transient();	
+	
 	}
 	
 	
@@ -240,10 +239,10 @@ class acf_settings_updates {
 		
 		
 		// validate
-		if( empty($response) )
-		{
-			acf_add_admin_notice( __('<b>Connection Error</b>. Sorry, please try again', 'acf'), 'error');
-			return;
+		if( empty($response) ) {
+			
+			return $this->show_remote_response_error();
+			
 		}
 		
 		
@@ -253,21 +252,24 @@ class acf_settings_updates {
 		
 		
 		// action
-		if( $response['status'] == 1 )
-		{
+		if( $response['status'] == 1 ) {
+			
 			acf_pro_update_license($response['license']);
-		}
-		else
-		{
+			
+		} else {
+			
 			$class = 'error';
+			
 		}
 		
 		
 		// show message
-		if( $response['message'] )
-		{
+		if( $response['message'] ) {
+			
 			acf_add_admin_notice($response['message'], $class);
+			
 		}
+		
 	}
 	
 	
@@ -309,8 +311,7 @@ class acf_settings_updates {
 		// validate
 		if( empty($response) ) {
 		
-			acf_add_admin_notice(__('<b>Connection Error</b>. Sorry, please try again', 'acf'), 'error');
-			return;
+			return $this->show_remote_response_error();
 			
 		}
 		

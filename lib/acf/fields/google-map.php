@@ -81,7 +81,7 @@ class acf_field_google_map extends acf_field {
 		
 		
 		// value
-		$field['value'] = acf_parse_args($field['value'], array(
+		$field['value'] = wp_parse_args($field['value'], array(
 			'address'	=> '',
 			'lat'		=> '',
 			'lng'		=> ''
@@ -103,20 +103,18 @@ class acf_field_google_map extends acf_field {
 		// vars
 		$atts = array(
 			'id'			=> $field['id'],
-			'class'			=> $field['class'],
+			'class'			=> "acf-google-map {$field['class']}",
 			'data-id'		=> $field['id'] . '-' . uniqid(), 
 			'data-lat'		=> $field['center_lat'],
 			'data-lng'		=> $field['center_lng'],
-			'data-zoom'		=> $field['zoom']
+			'data-zoom'		=> $field['zoom'],
 		);
 		
 		
-		// modify atts
-		$atts['class'] .= ' acf-google-map';
-		
+		// has value
 		if( $field['value']['address'] ) {
 		
-			$atts['class'] .= ' active';
+			$atts['class'] .= ' -value';
 			
 		}
 		
@@ -131,25 +129,18 @@ class acf_field_google_map extends acf_field {
 	
 	<div class="title acf-soh">
 		
-		<div class="has-value">
-			<a href="#" data-name="clear-location" class="acf-icon light acf-soh-target" title="<?php _e("Clear location", 'acf'); ?>">
-				<i class="acf-sprite-delete"></i>
-			</a>
-			<h4><?php echo $field['value']['address']; ?></h4>
+		<div class="actions acf-soh-target">
+			<a href="#" data-name="search" class="acf-icon -search grey" title="<?php _e("Search", 'acf'); ?>"></a>
+			<a href="#" data-name="clear" class="acf-icon -cancel grey" title="<?php _e("Clear location", 'acf'); ?>"></a>
+			<a href="#" data-name="locate" class="acf-icon -location grey" title="<?php _e("Find current location", 'acf'); ?>"></a>
 		</div>
 		
-		<div class="no-value">
-			<a href="#" data-name="find-location" class="acf-icon light acf-soh-target" title="<?php _e("Find current location", 'acf'); ?>">
-				<i class="acf-sprite-locate"></i>
-			</a>
-			<input type="text" placeholder="<?php _e("Search for address...",'acf'); ?>" class="search" />
-		</div>
-		
+		<input class="search" type="text" placeholder="<?php _e("Search for address...",'acf'); ?>" value="<?php echo $field['value']['address']; ?>" />
+		<i class="acf-loading"></i>
+				
 	</div>
 	
-	<div class="canvas" style="height: <?php echo $field['height']; ?>px">
-		
-	</div>
+	<div class="canvas" style="height: <?php echo $field['height']; ?>px"></div>
 	
 </div>
 <?php
@@ -284,10 +275,54 @@ class acf_field_google_map extends acf_field {
 		// return
 		return $value;
 	}
+	
+	
+	/*
+   	*  input_admin_footer
+   	*
+   	*  description
+   	*
+   	*  @type	function
+   	*  @date	6/03/2014
+   	*  @since	5.0.0
+   	*
+   	*  @param	$post_id (int)
+   	*  @return	$post_id (int)
+   	*/
+   	
+   	function input_admin_footer() {
+	   	
+	   	// vars
+	   	$api = array(
+			'libraries'		=> 'places',
+			'key'			=> acf_get_setting('google_api_key'),
+			'client'		=> acf_get_setting('google_api_client')
+	   	);
+	   	
+	   	
+	   	// filter
+	   	$api = apply_filters('acf/fields/google_map/api', $api);
+	   	
+	   	
+	   	// remove empty
+	   	if( empty($api['key']) ) unset($api['key']);
+	   	if( empty($api['client']) ) unset($api['client']);
+	   	
+	   	
+?>
+<script type="text/javascript">
+acf.fields.google_map.api = <?php echo json_encode($api); ?>;
+</script>
+<?php
+	
+   	}
+   	
 }
 
-new acf_field_google_map();
 
-endif;
+// initialize
+acf_register_field_type( new acf_field_google_map() );
+
+endif; // class_exists check
 
 ?>

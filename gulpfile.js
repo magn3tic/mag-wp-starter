@@ -11,7 +11,7 @@ var gulp = require('gulp'),
 
 //project settings
 var settings = {
-	server: 'http://localhost:8888/mag-starter',
+	server: 'http://localhost:8888/mag-starter/',
 	siteFiles: '**/*.php',
 	sassDir: '_sass/**/*.scss',
 	cssDest:  'assets/css',

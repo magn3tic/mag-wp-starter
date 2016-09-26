@@ -20,10 +20,12 @@ function acf_pro_get_view( $view_name = '', $args = array() ) {
 	$path = acf_get_path("pro/admin/views/{$view_name}.php");
 	
 	
-	if( file_exists($path) )
-	{
+	if( file_exists($path) ) {
+		
 		include( $path );
+		
 	}
+	
 }
 
 
@@ -48,11 +50,12 @@ function acf_pro_get_remote_url( $action = '', $args = array() ) {
 	
 	
 	// vars
-	$url = "http://connect.advancedcustomfields.com/index.php?" . build_query($args);
+	$url = "https://connect.advancedcustomfields.com/index.php?" . build_query($args);
 	
 	
 	// return
 	return $url;
+	
 }
 
 
@@ -81,8 +84,27 @@ function acf_pro_get_remote_response( $action = '', $post = array() ) {
 	));
 	
 	
-	// return body
-    if( !is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
+	// error
+	if( is_wp_error($request) ) {
+		
+	    // loop
+	    foreach( $request->errors as $k => $v ) {
+		    
+			// bail early if no error
+		    if( empty($v[0]) ) continue;
+		    
+		    
+		    // save
+			acf_update_setting('remote_response_error', $k . ': ' . $v[0]);
+			
+		    
+		    // only run once
+		    break;
+		    
+	    }
+	    
+	// success
+	} elseif( wp_remote_retrieve_response_code($request) === 200) {
     	
         return $request['body'];
     
@@ -90,7 +112,8 @@ function acf_pro_get_remote_response( $action = '', $post = array() ) {
     
     
     // return
-    return false;
+    return 0;
+    
 }
 
 
@@ -110,16 +133,12 @@ function acf_pro_get_remote_response( $action = '', $post = array() ) {
 function acf_pro_is_update_available() {
 	
 	// vars
-	$info = acf_pro_get_remote_info();
+	$info = acf_get_remote_plugin_info();
 	$version = acf_get_setting('version');
 	 
 	
 	// return false if no info
-	if( empty($info['version']) ) {
-		
-		return false;
-		
-	}
+	if( empty($info['version']) ) return false;
 	
     
     // return false if the external version is '<=' the current version
@@ -189,7 +208,7 @@ function acf_pro_get_remote_info() {
 		$info = json_decode($info, true);
 		
 		// fake info version
-        //$info['version'] = '5.0.1';
+        //$info['version'] = '6.0.0';
         
     } else {
 	    
@@ -197,9 +216,6 @@ function acf_pro_get_remote_info() {
 	    $timeout = 2 * HOUR_IN_SECONDS;
 	    
     }
-    
-    
-    
         
         
 	// update transient

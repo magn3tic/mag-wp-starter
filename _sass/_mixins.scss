@@ -68,7 +68,7 @@
 //typography settings are in.... base/_settings.scss
 
 @function context-calc($scale, $base, $value) {
-	@return ($scale/$base)#{$value};
+	@return #{($scale/$base)+$value};
 }
 @function measure-margin($scale, $measure, $value) {
 	$pixelValue: $measure/$scale;

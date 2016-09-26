@@ -36,9 +36,11 @@ class acf_field_checkbox extends acf_field {
 		$this->label = __("Checkbox",'acf');
 		$this->category = 'choice';
 		$this->defaults = array(
-			'layout'		=> 'vertical',
-			'choices'		=> array(),
-			'default_value'	=> '',
+			'layout'			=> 'vertical',
+			'choices'			=> array(),
+			'default_value'		=> '',
+			'toggle'			=> 0,
+			'return_format'		=> 'value'
 		);
 		
 		
@@ -65,27 +67,17 @@ class acf_field_checkbox extends acf_field {
 	function render_field( $field ) {
 		
 		// decode value (convert to array)
-		$field['value'] = acf_force_type_array($field['value']);
+		$field['value'] = acf_get_array($field['value'], false);
 		
 		
 		// hiden input
-		acf_hidden_input(array(
-			'type'	=> 'hidden',
-			'name'	=> $field['name'],
-		));
+		acf_hidden_input( array('name' => $field['name']) );
 		
 		
 		// vars
 		$i = 0;
-		
-		
-		// class
-		$field['class'] .= ' acf-checkbox-list';
-		$field['class'] .= ($field['layout'] == 'horizontal') ? ' acf-hl' : ' acf-bl';
-
-		
-		// e
-		$e = '<ul ' . acf_esc_attr(array( 'class' => $field['class'] )) . '>';
+		$li = '';
+		$all_checked = true;
 		
 		
 		// checkbox saves an array
@@ -110,9 +102,14 @@ class acf_field_checkbox extends acf_field {
 				);
 				
 				
+				// is choice selected?
 				if( in_array($value, $field['value']) ) {
 					
 					$atts['checked'] = 'checked';
+					
+				} else {
+					
+					$all_checked = false;
 					
 				}
 				
@@ -131,16 +128,56 @@ class acf_field_checkbox extends acf_field {
 					
 				}
 				
-				$e .= '<li><label><input ' . acf_esc_attr( $atts ) . '/>' . $label . '</label></li>';
+				
+				// append HTML
+				$li .= '<li><label><input ' . acf_esc_attr( $atts ) . '/>' . $label . '</label></li>';
+				
+			}
+			
+			
+			// toggle all
+			if( $field['toggle'] ) {
+				
+				// vars
+				$label = __("Toggle All", 'acf');
+				$atts = array(
+					'type'	=> 'checkbox',
+					'class'	=> 'acf-checkbox-toggle'
+				);
+				
+				
+				// custom label
+				if( is_string($field['toggle']) ) {
+					
+					$label = $field['toggle'];
+					
+				}
+				
+				
+				// checked
+				if( $all_checked ) {
+					
+					$atts['checked'] = 'checked';
+					
+				}
+				
+				
+				// append HTML
+				$li = '<li><label><input ' . acf_esc_attr( $atts ) . '/>' . $label . '</label></li>' . $li;
+					
 			}
 		
 		}
 		
-		$e .= '</ul>';
 		
+		// class
+		$field['class'] .= ' acf-checkbox-list';
+		$field['class'] .= ($field['layout'] == 'horizontal') ? ' acf-hl' : ' acf-bl';
+
 		
 		// return
-		echo $e;
+		echo '<ul ' . acf_esc_attr(array( 'class' => $field['class'] )) . '>' . $li . '</ul>';
+		
 	}
 	
 	
@@ -161,7 +198,7 @@ class acf_field_checkbox extends acf_field {
 		
 		// encode choices (convert from array)
 		$field['choices'] = acf_encode_choices($field['choices']);
-		$field['default_value'] = acf_encode_choices($field['default_value']);
+		$field['default_value'] = acf_encode_choices($field['default_value'], false);
 				
 		
 		// choices
@@ -196,6 +233,34 @@ class acf_field_checkbox extends acf_field {
 		));
 		
 		
+		// layout
+		acf_render_field_setting( $field, array(
+			'label'			=> __('Toggle','acf'),
+			'instructions'	=> __('Prepend an extra checkbox to toggle all choices','acf'),
+			'type'			=> 'radio',
+			'name'			=> 'toggle',
+			'layout'		=> 'horizontal', 
+			'choices'		=> array(
+				1				=> __("Yes",'acf'),
+				0				=> __("No",'acf'),
+			)
+		));
+		
+		
+		// return_format
+		acf_render_field_setting( $field, array(
+			'label'			=> __('Return Value','acf'),
+			'instructions'	=> __('Specify the returned value on front end','acf'),
+			'type'			=> 'radio',
+			'name'			=> 'return_format',
+			'layout'		=> 'horizontal',
+			'choices'		=> array(
+				'value'			=> __('Value','acf'),
+				'label'			=> __('Label','acf'),
+				'array'			=> __('Both (Array)','acf')
+			)
+		));		
+		
 	}
 	
 	
@@ -216,13 +281,8 @@ class acf_field_checkbox extends acf_field {
 
 	function update_field( $field ) {
 		
-		// decode choices (convert to array)
-		$field['choices'] = acf_decode_choices($field['choices']);
-		$field['default_value'] = acf_decode_choices($field['default_value']);
+		return acf_get_field_type('select')->update_field( $field );
 		
-		
-		// return
-		return $field;
 	}
 	
 	
@@ -244,25 +304,50 @@ class acf_field_checkbox extends acf_field {
 	
 	function update_value( $value, $post_id, $field ) {
 		
-		// validate
-		if( empty($value) ) {
+		return acf_get_field_type('select')->update_value( $value, $post_id, $field );
+	}
+	
+	
+	/*
+	*  translate_field
+	*
+	*  This function will translate field settings
+	*
+	*  @type	function
+	*  @date	8/03/2016
+	*  @since	5.3.2
+	*
+	*  @param	$field (array)
+	*  @return	$field
+	*/
+	
+	function translate_field( $field ) {
 		
-			return $value;
-			
-		}
+		return acf_get_field_type('select')->translate_field( $field );
 		
+	}
+	
+	
+	/*
+	*  format_value()
+	*
+	*  This filter is appied to the $value after it is loaded from the db and before it is returned to the template
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$value (mixed) the value which was loaded from the database
+	*  @param	$post_id (mixed) the $post_id from which the value was loaded
+	*  @param	$field (array) the field array holding all the field options
+	*
+	*  @return	$value (mixed) the modified value
+	*/
+	
+	function format_value( $value, $post_id, $field ) {
 		
-		// array
-		if( is_array($value) ) {
-			
-			// save value as strings, so we can clearly search for them in SQL LIKE statements
-			$value = array_map('strval', $value);
-			
-		}
+		return acf_get_field_type('select')->format_value( $value, $post_id, $field );
 		
-		
-		// return
-		return $value;
 	}
 	
 }
