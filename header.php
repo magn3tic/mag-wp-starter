@@ -30,6 +30,7 @@ $root = get_template_directory_uri();
 <![endif]-->
 
 <?php wp_head(); ?>
+
 <script>
 !window.jQuery && document.write('<script src="<?php echo "$root/assets/js/jquery-1.11.1.min.js"; ?>"><\/script>');
 </script>
