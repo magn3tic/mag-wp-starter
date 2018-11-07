@@ -29,9 +29,6 @@ function mag_acf_settings_dir( $dir ) {
 //uncomment this before handing off to client
 //add_filter('acf/settings/show_admin', '__return_false');
 
-//include/start ACF
-include_once(get_stylesheet_directory().'/lib/acf/acf.php');
-
 //Add options page and subpages
 //these are ideal for global site data, style options, instructions, etc
 if (function_exists('acf_add_options_page')) {
