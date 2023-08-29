@@ -15,26 +15,13 @@ $root = get_template_directory_uri();
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<script src="<?php echo "$root/assets/js/modernizr.js"; ?>"></script>
-
 <link rel="shortcut icon" href="<?php echo "$root/assets/img/favicon.png"; ?>">
 <link rel="apple-touch-icon" href="<?php echo "$root/assets/img/apple-touch-icon.png"; ?>">
 
 <link rel="stylesheet" media="screen,projection" href="<?php echo "$root/assets/css/screen.css"; ?>">
 <link rel="stylesheet" media="print" href="<?php echo "$root/assets/css/print.css"; ?>">
 
-<!--[if lt IE 9]>
-<link rel="stylesheet" media="print" href="<?php echo "$root/assets/css/ie.css"; ?>">
-<script type="text/javascript" src="<?php echo "$root/assets/js/polyfill/respond.js"; ?>"></script>
-<script type="text/javascript" src="<?php echo "$root/assets/js/polyfill/selectivizr-min.js"; ?>"></script>
-<![endif]-->
-
 <?php wp_head(); ?>
-
-<script>
-!window.jQuery && document.write('<script src="<?php echo "$root/assets/js/jquery-1.11.1.min.js"; ?>"><\/script>');
-</script>
-
 </head>
 
 <body <?php body_class(); ?> itemscope itemtype="http://schema.org/WebPage">

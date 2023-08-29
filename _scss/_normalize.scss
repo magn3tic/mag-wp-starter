@@ -14,7 +14,7 @@
 $legacy_support_for_ie: false !default; // Used also in Compass
 
 // Set the default font family here so you don't have to override it later
-$normalized_font_family: $body-font, sans-serif !default;
+$normalized_font_family: $font-family, sans-serif !default;
 
 // =============================================================================
 // HTML5 display definitions
@@ -82,7 +82,6 @@ textarea {
 // Addresses margins handled incorrectly in IE6/7
 
 body {
-    background: $body-background;
     margin: 0;
 }
 

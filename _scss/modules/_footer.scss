@@ -7,7 +7,6 @@
 .site-footer_nav {
 	ul {
 		list-style:none;margin:0;padding:0;
-		@include clearfix();
 	}
 	li {
 		display: block;
@@ -16,10 +15,4 @@
 
 .site-footer_copyright {
 	font-size: .9em;
-}
-
-
-@media (min-width:$bp-md) {
-	
-	
 }

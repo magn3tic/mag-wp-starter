@@ -19,6 +19,7 @@ $root = get_template_directory_uri();
 	</div>
 </footer>
 
-<script src="<?php echo "$root/assets/js/app.bundle.js"; ?>"></script>
+<script src="<?php echo "$root/assets/js/main.js"; ?>"></script>
+
 <?php wp_footer(); ?>
 </body>

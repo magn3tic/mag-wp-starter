@@ -12,15 +12,11 @@
 	display: none;
 	ul {
 		list-style:none;padding:0;margin:0;
-		@include clearfix();
 	}
 
 	li {
 		display: block;
 		text-align: right;
-	}
-	a {
-	
 	}
 }
 
@@ -30,14 +26,7 @@
 
 
 
-@media (min-width:$bp-md) {
-
-	.site-header_left {
-		@include column(3);
-	}
-	.site-header_right {
-		@include column(9);
-	}
+@include breakpointAbove('md') {
 
 	.mobile-toggle {
 		display: none;

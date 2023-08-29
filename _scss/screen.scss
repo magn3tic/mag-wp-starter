@@ -1,16 +1,11 @@
+@use 'sass:map';
+@use 'sass:math';
 /* Handmade by MAGNETIC CREATIVE 
 * http://www.magneticcreative.com
 ***********************************/
-@import "bourbon/bourbon";
-@import "neat/neat";
 
-//setup variables for color/type/grid
 @import "settings"; 
-
-//custom theme mixins
 @import "mixins";
-
-//necolas gallaghers normalize, slightly modded
 @import "normalize"; 
 
 //typography 
@@ -24,15 +19,8 @@
 @import "pages/page";
 @import "pages/post";
 
-@import "pages/archive";
-
 @import "modules/footer";
 
 @import "pages/404";
 
 @import "modules/forms";
-
-//plugin and library css
-//@import "plugins/flickity"; //flickity base css
-
-

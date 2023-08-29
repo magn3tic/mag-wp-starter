@@ -1,6 +1,4 @@
-//COLOR PALLETTE
-//-------------------//
-//new browser defaults (delete if not needed)
+// Color Pallette ---------------------//
 $aqua:  #7FDBFF;
 $blue:  #0074D9;
 $navy:  #001F3F;
@@ -25,90 +23,75 @@ $primary: $lime;
 $secondary: $lime;
 
 
-
-// GRID SETTINGS
-//---------------------//
-//set to any integer to make the grid adaptive
-//int will be used as an max-width offset to determine when container breaks
-//'responsive' === container is 100% width all the time
-//150 === @media (max-width:#{$bp-sm+150}) { max-width: $bp-sm } ...
-$container-style: 'responsive';
-$container-width: 100%;
-$container-max: 1155px;
-
-// set to true to compile full grid css (instead of using the mixin)
-$grid-html-classes: false; 
-
-$grid-cols: 12;
-
-//gutters are used to set the left & right padding
-$grid-gutters: false;
-
-//offsets are the margin between grid items
-$grid-offsets: false;
-
-//grid will work with as many breakpoints as you need
-$grid-breakpoints: ( 
-  sm: "580px", 
-  md: "767px", 
-  lg: "992px",
-  xl: "1199px" 
+// Media Query settings -------------- //
+$breakpoints: (
+  'xs': '500px',
+  'sm': '620px',
+  'md': '767px',
+  'mdlg': '836px',
+  'lg': '992px',
+  'xl': '1199px',
+  'xl2': '1280px',
+  'xl3': '1360px',
+  'xxl': '1440px',
+  'xxl2': '1580px',
+  'xxl3': '1720px'
 );
 
+@mixin breakpointAbove($size: 'md') {
+  @media (min-width: #{map.get($breakpoints, $size)}) {
+    @content;
+  }
+};
 
-//use these when wiritng media queries
-// ex: @media (min-width:$bp-sm) {}
-$bp-sm: map-get($grid-breakpoints,'sm');
-$bp-md: map-get($grid-breakpoints,'md');
-$bp-lg: map-get($grid-breakpoints,'lg');
-$bp-xl: map-get($grid-breakpoints,'xl');
-
-
-
-
-//TYPOGRAPHY SETTINGS
-//---------------------//
-$body-font: 'Open Sans', Helvetica, sans-serif;
-$heading-font: $body-font;
-$accent-font: $body-font;
-
-$body-background: $white;
-$body-color: $black;
-$heading-color: $black;
-
-//used in setting sizes, line-heights, margins...
-$line-height: 1.8;
-$font-size: 105;
-$font-base: 16 * ($font-size/100);
-$font-measure: $font-base * $line-height;
-
-//'rem' will output with pixel fallback
-$typescale-unit: rem;
-
-//paragraph spacing & indent
-$p-spacing: false;
-$p-indent: 1em;
-
-$small-print-size: .85em;
-
-$headings-scale: (
-  tera: 88,
-  giga: 70,
-  mega: 54,//h1
-  alpha: 46, 
-  beta: 38,
-  gamma: 32,
-  delta: 26,
-  epsilon: 21,//h6
-  zeta: 18
-);
-$headings-map: (
-  h1: mega,
-  h2: alpha,
-  h3: beta,
-  h4: gamma,
-  h5: delta,
-  h6: zeta
-);
+@mixin breakpointBelow($size: 'md') {
+  @media (max-width: #{map.get($breakpoints, $size)}) {
+    @content;
+  }
+};
 
 
+// Typography settings -------------- //
+$font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+$font-family-body: 'Aeonik', $font-family;
+$font-family-heading: 'Fragment', $font-family;
+$font-family-heading-alt: 'Aeonik', $font-family;
+
+$font-size-micro: 0.75rem;
+$font-size-xs: 0.8rem;
+$font-size-sm: 0.9rem;
+$font-size-default: 1rem;
+$font-size-md: 1.85rem;
+$font-size-lg: 2.2rem;
+$font-size-lg-alt: 2.7rem;
+$font-size-xl: 3.3rem;
+
+
+// Easing / Timing Function settings ---- //
+$ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+$ease-in-cubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+$ease-in-quart: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+$ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+$ease-in-sine: cubic-bezier(0.47, 0, 0.745, 0.715);
+$ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+$ease-in-circ: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+$ease-in-back: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+
+$ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+$ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+$ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+$ease-out-sine: cubic-bezier(0.39, 0.575, 0.565, 1);
+$ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+$ease-out-circ: cubic-bezier(0.075, 0.82, 0.165, 1);
+$ease-out-back: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+$ease-in-out-quad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+$ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+$ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+$ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
+$ease-in-out-sine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+$ease-in-out-expo: cubic-bezier(1, 0, 0, 1);
+$ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+$ease-in-out-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);

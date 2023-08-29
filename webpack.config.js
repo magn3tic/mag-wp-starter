@@ -1,44 +1,44 @@
+const path = require('path');
 
-module.exports = (options, paths) => {
-  
-  const plugins = [];
-  if (options.production) {
-    const uglify = new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }, 
-      output: {
-        comments: false
-      }
-    });
-    plugins.push(uglify);
-  }
+const getEntries = paths => Object.keys(paths.js.entry).reduce((result, key) => {
+  result[key] = `./${paths.js.entry[key]}`;
+  return result;
+}, {});
 
-  return {
-    entry: './' + paths.js.entry,
-    output: {
-      filename: paths.js.filename,
-      path: __dirname + '/' + paths.js.output
-    },
-    mode: options.production ? 'production' : 'development',
-    module: {
-      rules: [{
-        test: /\.js$/,
+module.exports = (options, paths) => ({
+  entry: getEntries(paths),
+
+  output: {
+    path: path.resolve(__dirname, paths.js.output),
+    filename: '[name].js',
+  },
+
+  mode: options.production ? 'production' : 'development',
+
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-              ['@babel/preset-env', {
-                "targets": {
-                  "browsers": options.browserlist
-                },
-                "debug": false
-              }]
-            ]
-          }
-        }
-      }]
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+    ],
+  },
+
+  resolve: {
+    modules: [
+      path.resolve(__dirname, './node_modules'),
+    ],
+    extensions: [
+      '.js',
+      '.jsx',
+    ],
+    alias: {
+      '@js': path.resolve(__dirname, './_js/'),
     },
-    plugins
-  };
-};
+  },
+});
