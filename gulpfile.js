@@ -4,12 +4,11 @@ const sass = require('gulp-sass')(require('sass'));
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
 const __if = require('gulp-if');
-const argv = require('yargs').argv;
 const browsersync = require('browser-sync').create();
-const webpackConfig = require('./webpack.config.js');
+const projectConfig = require('./project.config.js');
 
-const production = !!(argv.production);
-console.log('is production: ', production);
+const prod = projectConfig.production;
+console.log('is production: ', prod);
 
 const PATHS = {
   css: {
@@ -31,10 +30,13 @@ const PATHS = {
 
 // Serve w/ browser-sync
 function localServe(callback) {
-  if (production) return false;
+  if (prod) {
+    callback();
+    return false;
+  }
   browsersync.init({
-    proxy: 'http://localhost:8888/garmon/',
-    files: PATHS.css.watch,
+    proxy: projectConfig.localBaseUrl,
+    files: projectConfig.css.watch,
     ghostMode: false
   }, () => {
     callback();
@@ -43,40 +45,39 @@ function localServe(callback) {
 
 // Compile sass files
 function compileSass() {
-  return src(PATHS.css.scss)
-    .pipe(__if(!production, sourcemaps.init()))
+  return src(projectConfig.css.scss)
+    .pipe(__if(!prod, sourcemaps.init()))
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer())
-    .pipe(__if(!production, sourcemaps.write('./')))
-    .pipe(dest(PATHS.css.output));
+    .pipe(__if(!prod, sourcemaps.write('./')))
+    .pipe(dest(projectConfig.css.output));
 }
 
 // Run webpack for scripts
-const WEBPACK_CONFIG = webpackConfig({ production }, PATHS);
-console.log('config: ', WEBPACK_CONFIG);
-
 function runWebpack(callback) {
-  const webpackCompiler = webpack(WEBPACK_CONFIG);
+  const webpackCompiler = webpack(projectConfig.webpack);
   const onCompile = (err, stats) => {
     if (err) {
       console.log(`[WEBPACK-ERROR] ${err}`);
     } else {
       console.log(`[WEBPACK] ${stats.toString({chunks: false})}`);
-      if (!production) browsersync.reload();
+      if (!prod) browsersync.reload();
     }
     callback();
   };
-  (production ?
+  (prod ?
   webpackCompiler.run(onCompile) : 
   webpackCompiler.watch({}, onCompile));
 }
 
 // Gulp watchers
-watch(PATHS.css.scss, compileSass);
-watch(PATHS.html.reload, callback => {
-  browsersync.reload();
-  callback();
-});
+if (!prod) {
+  watch(PATHS.css.scss, compileSass);
+  watch(PATHS.html.reload, callback => {
+    browsersync.reload();
+    callback();
+  });
+}
 
 // Default task pipeline
 exports.default = series(parallel(compileSass, runWebpack), localServe);

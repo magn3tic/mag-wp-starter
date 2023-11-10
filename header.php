@@ -30,7 +30,6 @@ $root = get_template_directory_uri();
 	<div class="inner">
 		<div class="site-header_left">
 			<a id="site-title" href="<?php echo get_site_url(); ?>">
-				<i class="magicon-bolt-alt" aria-hidden="true"></i>
 				<span><?php echo bloginfo('site_title'); ?></span>
 			</a>
 			<button id="main-nav-toggle" class="mobile-toggle">Menu</button>
