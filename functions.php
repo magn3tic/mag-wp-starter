@@ -1,91 +1,36 @@
 <?php
 
-/*************** Config Settings *******************/
-
-/*$magconfig = array(
-	'disable_trackbacks' => true
-	);
-
-$GLOBALS['magconfig'] = $magconfig;*/
-
-
-/************* Advanced Custom Fields ****************/
-
-//http://www.advancedcustomfields.com/resources/ - V5-PRO
-//modify plugin paths, since we include ACF in theme
-
-add_filter('acf/settings/path', 'mag_acf_settings_path');
-function mag_acf_settings_path($path) {
-	$path = get_stylesheet_directory().'/lib/acf/';
-	return $path;
-}
-add_filter('acf/settings/dir', 'mag_acf_settings_dir');
-function mag_acf_settings_dir( $dir ) {
-    $dir = get_stylesheet_directory_uri().'/lib/acf/';
-    return $dir; 
+// Theme activation hook
+// runs after each time the theme is activated
+add_action('after_switch_theme', 'mag_theme_init');
+function mag_theme_init () {
 }
 
-//Hides the custom fields menu item
-//uncomment this before handing off to client
-//add_filter('acf/settings/show_admin', '__return_false');
-
-//Add options page and subpages
-//these are ideal for global site data, style options, instructions, etc
-if (function_exists('acf_add_options_page')) {
-	acf_add_options_page();
-	acf_set_options_page_title('Options Page');
-	acf_add_options_sub_page('Sub Page One');
-	acf_add_options_sub_page('Sub Page Two');
-}
-
-// changes permissions for options page, allows lower-level user access to options pages
-if( function_exists('acf_set_options_page_capability') ) {
-    acf_set_options_page_capability( 'manage_options' );
-}
-
-
-/******************** Admin Mods ***********************/
-
-// various mods to admin and login screen
+// post-type registrations & other admin mods
 include_once('lib/admin.php');
 
-
-/******************** Shortcodes ***********************/
-
-// these are created for use in the visual editor
-// see file for examples and reference links
+// shortcode definitions & examples
 include_once('lib/shortcodes.php');
 
+// customizer fields & examples
+include_once('lib/customizer.php');
 
-/******************** jQuery enqueue *************************/
-
-// this is the only js file enqueued using wordpress' api, 
-// all other javascript will be embedded in footer.php or header.php
-// we know this goes against commercial theme-developer best practices, 
-// but it ensures our scripts/styles CAN'T be deregistered 
-
-if (!is_admin()) add_action("wp_enqueue_scripts", "mag_script_enqueue", 11);
-function mag_script_enqueue() {
-   wp_deregister_script('jquery');
-   wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js", false, null, null);
-   wp_enqueue_script('jquery');
-}
+// meta field definitions
+include_once('lib/metafields.php');
 
 
-/******************** Theme Support Settings **************************/
-
-// Post Formats
+// Post Formats (uncomment to allow)
 // options are 'aside', 'gallery', 'link', 'image', 'quote', 'status', 'video', 'audio', 'chat'
-//add_theme_support('post-formats', array('link', 'quote', 'gallery'));
+// add_theme_support('post-formats', array('link', 'quote', 'gallery'));
 
 // html5 markup for comments and search
 add_theme_support( 'html5', array( 'caption', 'comment-list', 'comment-form', 'search-form' ));
 
 // enable featured images
-add_theme_support( 'post-thumbnails' ); 
+add_theme_support('post-thumbnails'); 
 
-// let plugins manage page title
-add_theme_support( 'title-tag' );
+// let plugins (like Yoast SEO) manage page title
+add_theme_support('title-tag');
 
 // Add image sizes like so, they'll get cropped on upload
 // after adding new image sizes, you may to regenerate thumbnails
@@ -96,23 +41,16 @@ add_image_size( 'custom_thumb_alt', 900, 550, true );
 // This is a global variable used inside wordpress to set a maximum image or object size
 // Set it to about the site's container size
 if (!isset($content_width)) {
-  $content_width = 1220;
+  $content_width = 1600;
 }
 
-
-
-/********************* WP Search ***************************/
-// add filter to wp's get_search_form() function to change locations to partials folder
-
+// Example search form partial
 add_filter('get_search_form', 'mag_get_search_form');
 function mag_get_search_form() {
 	$form = '';
 	locate_template('/partials/searchform.php', true, false);
 	return $form;
 }
-
-
-/******************** Menu Settings ***************************/
 
 // Register Menus - see header.php for example of outputting menu
 register_nav_menus( array(
@@ -134,17 +72,12 @@ function mag_replace_menu_classes($text) {
 } 
 add_filter('wp_nav_menu', 'mag_replace_menu_classes');
 
-
-
-/******************** Post Excerpts *************************/
-
-// edit to whatever link you want at the end of post excerpts
-// wordpress' default is [...]
+// Customize Post Excerpts
+// adjust 'more' link at end of post excerpt wp default is [...]
 add_filter( 'excerpt_more', 'mag_excerpt_more_link' );
 function mag_excerpt_more_link($more) {
  return ' <a href="'.get_the_permalink().'">...Read More</a>';
 }
-
 
 //If you need to change how wordpress handles the excerpt entirely
 /*
@@ -177,27 +110,21 @@ function truncator($phrase, $max_words) {
    return $phrase;
 }
 
-
-/******************** Widgets Setup **************************/
-// if you need to set up some widgets, you can do it here
-
-function mag_widgets_register() {
-	register_sidebar( array(
-		'name' => 'example_widget',
-		'id' => '',
-		'before_widget' => '',
-		'after_widget' => '',
-		'before_title' => '',
-		'after_title' => ''
-	));
-}
+// Widgets - if you need to set up some widgets, you can do it here
+// function mag_widgets_register() {
+// 	register_sidebar( array(
+// 		'name' => 'example_widget',
+// 		'id' => '',
+// 		'before_widget' => '',
+// 		'after_widget' => '',
+// 		'before_title' => '',
+// 		'after_title' => ''
+// 	));
+// }
 //add_action('widgets_init', 'mag_widgets_register');
 
-
-/********************* Pagination ****************************/
-
 // pagination function - use it after your loops to output paginated links
-if ( ! function_exists( 'mag_pagination' ) ) :
+if (!function_exists('mag_pagination')) :
 	function mag_pagination() {
 		global $wp_query;
 		$big = 999999999; // need an unlikely integer
