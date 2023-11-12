@@ -1,9 +1,10 @@
-import siteHeader from './lib/site-header';
+import smoothScroll from './lib/smooth-scroll';
+import lazyLoad from './lib/lazy-load';
+import siteHeader from './modules/site-header';
 
-console.log('app.js loaded...');
-
+smoothScroll();
+lazyLoad();
 siteHeader();
 
-alert('FUUUCK');
 
 

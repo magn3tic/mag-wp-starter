@@ -6,8 +6,35 @@ add_action('after_switch_theme', 'mag_theme_init');
 function mag_theme_init () {
 }
 
+// Includes ACF plugin from theme so it can't be uninstalled
+// Define path and URL to the ACF plugin.
+define('MAG_ACF_PATH', get_stylesheet_directory() . '/lib/acf/');
+define('MAG_ACF_URL', get_stylesheet_directory_uri() . '/lib/acf/');
+
+include_once(MAG_ACF_PATH . 'acf.php');
+
+add_filter('acf/settings/url', 'mag_acf_settings_url');
+function mag_acf_settings_url( $url ) {
+  return MAG_ACF_URL;
+}
+
+// Hides custom fields menu item, uncomment after development
+// add_filter('acf/settings/show_admin', '__return_false');
+
+// When including the PRO plugin, hide the ACF Updates menu
+// add_filter('acf/settings/show_updates', '__return_false', 100);
+
+
 // post-type registrations & other admin mods
 include_once('lib/admin.php');
+
+// php templating helpers & small components
+include_once('partials/icons.php');
+include_once('partials/template-helpers.php');
+include_once('partials/template-functions.php');
+
+// customize gutenberg page edit screen
+include_once('lib/block-editor.php');
 
 // shortcode definitions & examples
 include_once('lib/shortcodes.php');
