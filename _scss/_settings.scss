@@ -28,14 +28,9 @@ $breakpoints: (
   'xs': '500px',
   'sm': '620px',
   'md': '767px',
-  'mdlg': '836px',
   'lg': '992px',
   'xl': '1199px',
-  'xl2': '1280px',
-  'xl3': '1360px',
-  'xxl': '1440px',
-  'xxl2': '1580px',
-  'xxl3': '1720px'
+  'xxl': '1440px'
 );
 
 @mixin breakpointAbove($size: 'md') {

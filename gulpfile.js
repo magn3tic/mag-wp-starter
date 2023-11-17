@@ -10,24 +10,6 @@ const projectConfig = require('./project.config.js');
 const prod = projectConfig.production;
 console.log('is production: ', prod);
 
-const PATHS = {
-  css: {
-    scss: '_scss/**/*.scss',
-    output: 'assets/css',
-    watch: 'assets/css/*.css'
-  }, 
-  js: {
-    entry: {
-      main: '_js/main.js',
-    },
-    output: 'assets/js',
-    filename: '[name].js'
-  },
-  html: {
-    reload: '**/*.php'
-  } 
-};
-
 // Serve w/ browser-sync
 function localServe(callback) {
   if (prod) {
@@ -72,8 +54,8 @@ function runWebpack(callback) {
 
 // Gulp watchers
 if (!prod) {
-  watch(PATHS.css.scss, compileSass);
-  watch(PATHS.html.reload, callback => {
+  watch(projectConfig.css.scss, compileSass);
+  watch(projectConfig.watchTemplates, callback => {
     browsersync.reload();
     callback();
   });

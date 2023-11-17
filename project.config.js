@@ -20,7 +20,7 @@ module.exports = {
   // webpack settings (used for js only)
   webpack: {
     entry: {
-      main: '_js/main.js',
+      main: './_js/main.js',
     },
     output: {
       path: path.resolve(__dirname, 'assets/js'),
