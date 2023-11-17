@@ -10,8 +10,8 @@ get_header(); ?>
 		
 		<h1>A WP Starter Theme</h1>
 		<h4>by Magnetic Creative</h4>
-		<a href="#0" class="button">
-			<i class="magicon-share" aria-hidden="true"></i> 
+		
+		<a href="https://github.com/magn3tic/mag-wp-starter" class="button">
 			<span>View on Github</span>
 		</a>
 

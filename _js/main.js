@@ -1,9 +1,12 @@
-import siteHeader from './lib/site-header';
+import smoothScroll from './lib/smooth-scroll';
+import lazyLoad from './lib/lazy-load';
+import siteHeader from './modules/site-header';
 
-console.log('app.js loaded...');
+console.log('Mag WP Starter...');
 
+smoothScroll();
+lazyLoad();
 siteHeader();
 
-alert('FUUUCK');
 
 

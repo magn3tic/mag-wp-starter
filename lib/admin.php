@@ -1,13 +1,10 @@
 <?php
 
-/********************** Custom Post Types Setup **********************/
-
+// Register Custom Post Types
 // Custom Post Types - http://codex.wordpress.org/Post_Types
-// Reference for 'menu_icon' -- http://www.kevinleary.net/wordpress-dashicons-list-custom-post-type-icons/
-// repeat this block as many times as needed
-
-add_action('init', 'custom_type_register');
-function custom_type_register() {
+// 'menu_icon' reference - https://developer.wordpress.org/resource/dashicons
+add_action('init', 'mag_custom_type_register');
+function mag_custom_type_register() {
    $labels = array(
       'name' => 'Custom Post',
       'singular_name' => 'Custom Post',
@@ -37,9 +34,8 @@ function custom_type_register() {
    register_post_type( 'new-custom-type' , $args );
 }
 
-
-//use to add custom categories or tags to your custom post types
-//set hierarchical to true for category behavior, false for tags
+// Register custom taxonomies
+// hierarchical === true for category behavior, false for tags
 register_taxonomy( 'custom_taxonomies', 
    array('new-custom-type'), 
    array('hierarchical' => true,   
@@ -61,18 +57,13 @@ register_taxonomy( 'custom_taxonomies',
    )
 );
 
-
-/********************* Modify Admin Post Columns ************************/
-
+// Modify Admin Post Columns (Example)
 // Adds custom field previews for posts/post-types in admin section
-
 add_filter('manage_edit-new-custom-type_columns', 'custom_type_table_head');
 function custom_type_table_head( $columns ) {
   $columns['field_key']  = 'Example';
- 
   return $columns;
 }
-
 add_action( 'manage_posts_custom_column', 'custom_type_table_content', 10, 2 );
 function custom_type_table_content( $column_name ) {
    global $post;
@@ -82,28 +73,23 @@ function custom_type_table_content( $column_name ) {
    }
 }
 
-
-
-/********************** Login and Admin Frontend *********************/
-
+// Style default wp-login screen
 add_action('admin_head','mag_admin_css');
 add_action('login_enqueue_scripts', 'mag_admin_css');
 function mag_admin_css() { 
    echo '<link rel="stylesheet" href="'.get_template_directory_uri().'/assets/css/admin.css"/>';
 }
 
-//if necessary you can add js the same way
+// Inject JS at login screen if needed
 // add_action('admin_footer','mag_admin_js'); 
 function mag_admin_js() { ?>
 <?php } 
-
 
 // admin footer message, shown in bottom left on all screens
 function mag_admin_footer() {
    echo '<span id="footer-thankyou">Wordpress Theme by <a href="http://www.magneticcreative.com">Magnetic Creative</a>.</span>';
 }
 add_filter('admin_footer_text', 'mag_admin_footer');
-
 
 // don't link to wordpress.org from login
 add_filter('login_headerurl', 'mag_login_url');
@@ -117,10 +103,12 @@ function mag_login_title() {
    return get_option('blogname'); 
 }
 
+// Admin Cleanup
+// prevent ability to edit code files
+define('DISALLOW_FILE_EDIT', true);
 
-
-
-/************************ Wordpress Cleanup ****************************/
+// prevent ability to install plugins if needed
+// define('DISALLOW_FILE_MODS', true);
 
 // remove unneccessary stuff from doc head
 remove_action('wp_head', 'feed_links', 2);
@@ -133,13 +121,6 @@ remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 );
 remove_action('wp_head', 'wp_shortlink_wp_head', 10, 0); 
 remove_action('wp_head', 'wp_generator' );
 
-
-// removes p tags around images added through visual editor
-add_filter('the_content', 'mag_filter_ptags_on_images');
-function mag_filter_ptags_on_images($content){
-   return preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
-}
-
 // replaces self closing tags
 add_filter('get_avatar', 'mag_remove_self_closers');
 add_filter('comment_id_fields', 'mag_remove_self_closers');
@@ -148,9 +129,16 @@ function mag_remove_self_closers($input) {
   return str_replace(' />', '>', $input);
 }
 
+// Adjust TinyMCE (rich text editor) behavior
 // Removes p tags added around content and excerpt
-//remove_filter('the_content', 'wpautop'); //probably don't want to uncomment
-remove_filter('the_excerpt', 'wpautop');
+// remove_filter('the_content', 'wpautop'); //probably don't want to uncomment
+// remove_filter('the_excerpt', 'wpautop');
+
+// removes p tags around images added through visual editor
+add_filter('the_content', 'mag_filter_ptags_on_images');
+function mag_filter_ptags_on_images($content){
+   return preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
+}
 
 // Disable default dash widgets
 function disable_default_dashboard_widgets() {
@@ -168,10 +156,8 @@ function disable_default_dashboard_widgets() {
 }
 add_action( 'wp_dashboard_setup', 'disable_default_dashboard_widgets' );
 
-
-/************************ Trackback Disable **************************/
+// Disable pingback, trackback, etc
 // disable the pingback method, remove the headers and rewrite rules
-
 function mag_filter_xmlrpc_method($methods) {
   unset($methods['pingback.ping']);
   return $methods;
@@ -205,10 +191,7 @@ function mag_kill_xmlrpc($action) {
 }
 add_action('xmlrpc_call', 'mag_kill_xmlrpc');
 
-
-
-/************************* Add Blog Feed to Admin ****************************/
-
+// Custom Dashboard Widget Example
 // add custom widget - blog feed in dash
 // once our blog is running we'll have this active by default
 /*function mag_rss_dashboard_widget() {
@@ -233,7 +216,7 @@ add_action('xmlrpc_call', 'mag_kill_xmlrpc');
 }*/
 
 //adding all custom dash widgets
-/*function mag_custom_dashboard_widgets() {
-	wp_add_dashboard_widget('og_rss_dashboard_widget', 'The Latest From Magnetic Creative', 'mag_rss_dashboard_widget');
-}*/
-/*add_action('wp_dashboard_setup', 'mag_custom_dashboard_widgets');*/
+// function mag_custom_dashboard_widgets() {
+//    wp_add_dashboard_widget('og_rss_dashboard_widget', 'The Latest From Magnetic Creative', 'mag_rss_dashboard_widget');
+// }
+// add_action('wp_dashboard_setup', 'mag_custom_dashboard_widgets');
