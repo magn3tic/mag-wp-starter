@@ -24,19 +24,18 @@ $root = get_template_directory_uri();
 <?php wp_head(); ?>
 </head>
 
-<body <?php body_class(); ?> itemscope itemtype="http://schema.org/WebPage">
+<body <?php body_class(); ?>>
 
-<header id="header" class="site-header" itemscope itemtype="http://schema.org/WPHeader">
+<header id="header" class="site-header">
 	<div class="inner">
 		<div class="site-header_left">
 			<a id="site-title" href="<?php echo get_site_url(); ?>">
-				<i class="magicon-bolt-alt" aria-hidden="true"></i>
 				<span><?php echo bloginfo('site_title'); ?></span>
 			</a>
 			<button id="main-nav-toggle" class="mobile-toggle">Menu</button>
 		</div>
 		<div class="site-header_right">
-			<nav id="main-nav" class="primary-nav" role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
+			<nav id="main-nav" class="primary-nav" role="navigation">
 			<?php wp_nav_menu( array(
 		    'theme_location' => 'header-menu',
 		    'menu_class' => 'primary-nav_menu',
