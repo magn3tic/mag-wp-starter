@@ -11,6 +11,11 @@ function mag_element_attrs($array) {
   return $attrs;
 }
 
+// Theme image url
+function mag_get_theme_image($filename) {
+  return get_template_directory_uri() . '/assets/img/' . $filename;
+}
+
 // get info for an image attachment by ID & optionally size
 function mag_get_image_by_id($stringID, $imageSize = false) {
   if (!is_string($stringID)) {

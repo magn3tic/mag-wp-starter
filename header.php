@@ -19,14 +19,13 @@ $root = get_template_directory_uri();
 <link rel="apple-touch-icon" href="<?php echo "$root/assets/img/apple-touch-icon.png"; ?>">
 
 <link rel="stylesheet" media="screen,projection" href="<?php echo "$root/assets/css/screen.css"; ?>">
-<link rel="stylesheet" media="print" href="<?php echo "$root/assets/css/print.css"; ?>">
 
 <?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
 
-<header id="header" class="site-header">
+<header id="" class="site-header">
 	<div class="inner">
 		<div class="site-header_left">
 			<a id="site-title" href="<?php echo get_site_url(); ?>">
